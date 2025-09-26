@@ -1,6 +1,6 @@
 {
-  "name": "knowntain",
-  "short_name": "knowntain",
+  "name": "Knowntain",
+  "short_name": "Knowntain",
   "description": "A biodiversity map",
   "start_url": "/",
   "display": "standalone",
@@ -9,14 +9,9 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icons/forest.svg.png",
-      "sizes": "192x192",
-      "type": "image/svg"
-    },
-    {
-      "src": "icons/forest.svg.png",
-      "sizes": "512x512",
-      "type": "image/svg"
+      "src": "icons/forest.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }

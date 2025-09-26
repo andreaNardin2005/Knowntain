@@ -6,10 +6,21 @@
     <title>Knowntain</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- pwa -->
+    <link rel="manifest" href="PWA/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes"> <!--solo per safari-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!--barra di stato trasparente (per safari)-->
+
     <!-- Leaflet (libreria per la mappa) -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
+    <!-- icona dell'app -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/forest.png"> <!--specifico per safari (non è di bocca buona, vuole solo png)-->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/forest.svg">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/forest.svg">
+
+    <!-- stili -->
     <link rel="stylesheet" href="css/map.css">
 </head>
 
@@ -24,7 +35,11 @@
 
     <div id="filter-container"></div>
 
+    <!--inizializzo la mappa-->
     <script src="scripts/map.js"></script>
+
+    <!--inizializzo la PWA-->
+    <script src="scripts/initPwa.js"></script>
 </body>
 
 </html>
