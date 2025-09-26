@@ -79,3 +79,32 @@ function addGeoJSONLayer(name, url, options = {}) {
 // aggiungo i layer alla mappa e al filtro
 addGeoJSONLayer("Popolazione orso", "geo/orso.geojson", { fillColor: "lightblue" });
 addGeoJSONLayer("Pinete", "geo/pinete.geojson", { color: "green", fillColor: "lightgreen" });
+
+// Posizione dell'utente
+document.addEventListener("DOMContentLoaded", () => {
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  };
+
+  function success(pos) {
+    const crd = pos.coords;
+
+    console.log("Your current position is:");
+    console.log(`Latitude : ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+    console.log(`More or less ${crd.accuracy} meters.`);
+
+    const latitude = crd.latitude;
+    const longitude = crd.longitude;
+
+    L.marker([latitude, longitude]).addTo(map);
+  }
+
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
+
+  navigator.geolocation.getCurrentPosition(success, error, options);
+});
