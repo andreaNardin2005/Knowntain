@@ -2,3 +2,10 @@
     height: 50vh;
     width: 50%;
 }
+
+.feature-inner-text{
+    color: black;
+    font-weight: bold;
+    background: none;
+    font-size: 1rem;
+}

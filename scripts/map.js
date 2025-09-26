@@ -48,7 +48,7 @@ function addGeoJSONLayer(name, url, options = {}) {
     .then(data => {
       const layer = L.geoJSON(data, {
         style: feature => ({
-          color: options.color || "blue",
+          color: options.color || "lightblue",
           fillColor: options.fillColor || "lightblue",
           fillOpacity: options.fillOpacity ?? 0.4,
           weight: options.weight || 2
@@ -56,14 +56,15 @@ function addGeoJSONLayer(name, url, options = {}) {
 
         onEachFeature: (feature, layer) => {
           if (feature.properties && feature.properties.name){
-            const center = layer.getBouds().getCenter();
-            /*
+            const center = layer.getBounds().getCenter();
+
+            console.log("centro: " + center + "   " + feature.properties.name); 
             L.marker(center, {
               icon: L.divIcon({
-                html: "Ciao Roma!"
+                className: "feature-inner-text",
+                html: feature.properties.name
               })
             }).addTo(map);
-            */
           }
         }
       });
@@ -76,5 +77,5 @@ function addGeoJSONLayer(name, url, options = {}) {
 }
 
 // aggiungo i layer alla mappa e al filtro
-addGeoJSONLayer("Popolazione orso", "geo/orso.geojson", { color: "blue", fillColor: "lightblue" });
+addGeoJSONLayer("Popolazione orso", "geo/orso.geojson", { fillColor: "lightblue" });
 addGeoJSONLayer("Pinete", "geo/pinete.geojson", { color: "green", fillColor: "lightgreen" });
