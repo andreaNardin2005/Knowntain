@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Knowntain</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Leaflet (libreria per la mappa) -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <link rel="stylesheet" href="css/map.css">
+</head>
+
+<!-- template da usare in js -->
+<template id="filter-checkbox">
+    <input type="checkbox" class="layer-filter"/>
+    <label></label>
+</template>
+
+<body>
+    <div id="map"></div>
+
+    <div id="filter-container"></div>
+
+    <script src="scripts/map.js"></script>
+</body>
+
+</html>
