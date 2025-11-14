@@ -1,0 +1,16 @@
+openapi: 3.0.4
+info:
+  version: '1.0'
+  title: "Knowntain OpenAPI 3.0"
+  description: APIs for managing book lendings.
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Localhost
+  #- url: https://easy-lib.onrender.com/api/v1
+    #description: render.com
+paths:
+
+
+  
