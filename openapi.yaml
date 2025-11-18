@@ -1,0 +1,61 @@
+# ! IMPORTANT: ricordarsi di caricarlo su swagger, con specifica Swagger (no API blueprint)
+openapi: 3.0.4
+info:
+  version: '1.0'
+  title: "Knowntain OpenAPI 3.0"
+  description: APIs for managing book lendings.
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Localhost
+  #- url: https://knowntain.onrender.com/api/v1
+    #description: render.com
+paths:
+    /auth/register:
+      post:
+        summary: Register a user
+        description: Allows a user to create a new account.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema : {$ref: '#/components/schemas/RegisterRequest'}
+        responses: 
+          '201':
+            description: User registered successfully
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    success: 
+                      type: boolean
+                      description: 'True if the registration was successful'
+
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - surname
+        - email
+        - nickname
+        - password
+      properties:
+        name:
+          type: string
+          example: Mario
+        surname:
+          type: string
+          example: Rossi
+        email:
+          type: string
+          format: email
+          example: mario.rossi@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: P4ssw0rd!
