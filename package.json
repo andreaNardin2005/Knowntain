@@ -1,0 +1,22 @@
+{
+  "name": "knowntain",
+  "version": "1.0.0",
+  "description": "A biodiverity map",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreaNardin2005/Knowntain.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreaNardin2005/Knowntain/issues"
+  },
+  "homepage": "https://github.com/andreaNardin2005/Knowntain#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
