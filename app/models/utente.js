@@ -9,5 +9,4 @@ const UtenteSchema = new Schema({
     punti: { type: Number, default: 0 }
 });
 
-const Utente = mongoose.model('Utente', UtenteSchema);
-export { Utente };
+export default mongoose.model('Utente', UtenteSchema,'utenti');

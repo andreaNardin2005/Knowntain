@@ -11,5 +11,4 @@ const IniziativaSchema = new Schema({
     puntiObiettivo: { type: Number, required: true }   // punteggio da raggiungere
 });
 
-const Iniziativa = mongoose.model('Iniziativa', IniziativaSchema);
-export { Iniziativa };
+export default mongoose.model('Iniziativa', IniziativaSchema,'iniziative');

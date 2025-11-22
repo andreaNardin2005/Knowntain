@@ -5,6 +5,12 @@ import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'fs';
 import yaml from 'js-yaml';
 
+// Routers
+import utente from './routers/utente.js';
+import dipendente from './routers/dipendente.js';
+import segnalazione from './routers/segnalazione.js';
+import iniziativa from './routers/iniziativa.js';
+
 // Determine __dirname in ES module scope
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = Path.dirname(__filename);
@@ -23,9 +29,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Middleware per fare il parsing json
 app.use(express.json());
 
-app.get('/', (req,res) => {
-    res.send('<h1>HomePage</h1>');
-})
+app.use('/utente',utente);
+app.use('/dipendente',dipendente);
+app.use('/segnalazione',segnalazione);
+app.use('/iniziativa',iniziativa);
 
 
 

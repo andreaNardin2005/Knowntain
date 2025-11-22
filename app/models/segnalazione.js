@@ -44,5 +44,4 @@ const SegnalazioneSchema = new Schema({
     foto: [Buffer]
 });
 
-const Segnalazione = mongoose.model('Segnalazione', SegnalazioneSchema);
-export { Segnalazione };
+export default mongoose.model('Segnalazione', SegnalazioneSchema,'segnalazioni');
