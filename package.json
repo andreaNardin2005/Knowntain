@@ -1,10 +1,11 @@
 {
   "name": "knowntain",
   "version": "1.0.0",
+  "type": "module",
   "description": "A biodiverity map",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,11 @@
   "homepage": "https://github.com/andreaNardin2005/Knowntain#readme",
   "dependencies": {
     "express": "^5.1.0",
-    "mongoose": "^9.0.0"
+    "js-yaml": "^4.1.1",
+    "mongoose": "^9.0.0",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
