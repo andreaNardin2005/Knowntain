@@ -1,12 +1,11 @@
-import mongoose from "mongoose";
-const URI = 'mongodb://localhost:27017/Knowntain';
+import mongoose from 'mongoose';
 
 export async function connectDB() {
   try {
-    await mongoose.connect(URI);
-    console.log('MongoDB connected');
+    await mongoose.connect(process.env.DB_URL);
+    console.log('MongoDB Atlas connected');
   } catch (err) {
-        console.error('Errore di connessione a MongoDB:', err);
-        process.exit(1);
+    console.error('Errore di connessione a MongoDB Atlas:', err);
+    process.exit(1);
   }
 }

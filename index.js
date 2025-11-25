@@ -1,7 +1,8 @@
 import app from './app/app.js';
 import { connectDB } from './app/db.js';
-const PORT = 3000;
+const PORT = process.env.PORT;
 
+// Funzione che tenta la connessione ad DB Mongo Atlas
 connectDB();
 
 app.listen(PORT, () => {

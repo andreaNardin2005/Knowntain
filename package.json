@@ -5,7 +5,8 @@
   "description": "A biodiverity map",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "node -r dotenv/config index.js"
   },
   "repository": {
     "type": "git",
@@ -20,10 +21,12 @@
   "dependencies": {
     "express": "^5.1.0",
     "js-yaml": "^4.1.1",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^9.0.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "dotenv": "^17.2.3",
     "nodemon": "^3.1.11"
   }
 }
