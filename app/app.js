@@ -29,10 +29,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Middleware per fare il parsing json
 app.use(express.json());
 
-app.use('/utente',utente);
-app.use('/dipendente',dipendente);
-app.use('/segnalazione',segnalazione);
-app.use('/iniziativa',iniziativa);
+app.use('/utenti',utente);
+app.use('/dipendenti',dipendente);
+app.use('/segnalazioni',segnalazione);
+app.use('/iniziative',iniziativa);
 
 
 
