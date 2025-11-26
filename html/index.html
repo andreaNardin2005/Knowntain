@@ -35,21 +35,23 @@
         <div class="cover__content">
             <h1>Knowntain </h1>
             <p class="intro">A biodiversity Map</p>
-            <a class="arrow-button" href="#">
+            <a class="arrow-button" href="#footer">
                 Scopri di più
             </a>
         </div>
     </div>
 
-    <div class="section">
-
-    </div>
-
+    
     <footer id="footer">
         <div class="footer__content">
-            <a href="#">
+            <a href="https://github.com/andreaNardin2005/Knowntain" target="_blank">
                 <img src="../imgs/github.svg" alt="github" class="img-res">
             </a>
+            <div class="authors">
+                <span>Andrea Nardin</span>
+                <span>Nicolas Aresu</span>
+                <span>Gabriele D'Incà</span>
+            </div>
         </div>
         
     </footer>
@@ -59,7 +61,7 @@
         /* ---------- Menu appear / disappear on scrool ----------- */
         let lastScroolTop = 0;
         let navbar = document.querySelector("#header");
-        window.addEventListener('scroll', function () {
+        window.addEventListener('scroll', () => {
         var scrollTop = window.scrollY;
         if (scrollTop > lastScroolTop) {
             navbar.classList.add("show-nav");
@@ -68,9 +70,6 @@
         }
         lastScroolTop = scrollTop;
         });
-
     </script>
-
-
 </body>
 </html>

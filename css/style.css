@@ -33,17 +33,20 @@ ul {
 ol,
 ul {list-style-type: none;}
 img {height: auto;}
-h1 {font-size: 5rem;}
+h1 {font-size: 5rem; font-weight: 800;}
 h2 {font-size: 3rem;}
 h3 {font-size: 2rem;}
 h4 {font-size: 1rem;}
 h5 {font-size: 0.8rem;}
 h6 {font-size: 0.6rem;}
 a {text-decoration: none}
-.intro {font-weight: 200; text-transform: uppercase;}
+    
+.intro {
+    font-weight: 200;
+    text-transform: uppercase;
+}
 
 /* General Styling ************************* */
-
 
 /* Main Colors*/
 :root {
@@ -57,10 +60,6 @@ a {text-decoration: none}
     background: var(--knt-green);
 }
 
-body {
-    background-color: var(--knt-white);
-}
-
 /* Button Styling */
 .button {
     border: none;
@@ -72,7 +71,7 @@ body {
     border-radius: 10px;
     font-weight: 700;
     box-shadow: 0px 5px 5px #9a9a9a;
-    transition: all 1s cubic-bezier(.215, .61, .355, 1);
+    transition: all 0.5s cubic-bezier(.215, .61, .355, 1);
     cursor: pointer;
 }
 
@@ -84,24 +83,20 @@ body {
 }
 
 .button:hover {
-    background: var(--knt-abs-white);
-}
-
-.button:hover a {
-    color: var(--knt-green);
+    transform: scale(1.08);
 }
 
 /* Arrow Button */
 .arrow-button {
     color: var(--knt-abs-white);
+    margin-top: 30px;
     position: relative;
     font-size: 1rem;
     text-transform: uppercase;
     background: var(--knt-green);
     color: var(--white);
     text-decoration: none;
-    border: none;
-    padding: 14px 80px 14px 24px;
+    padding: 20px 80px 20px 24px;
     display: inline-block;
     border-radius: 10px;
     font-weight: 700;
@@ -117,7 +112,7 @@ body {
 .arrow-button::after {
     content: "→";
     position: absolute;
-    top: 2px;
+    top: 8px;
     right: 40px;
     display: block;
     width: 30px;
@@ -174,8 +169,6 @@ body {
 #login a {
     color: var(--knt-green);
 }
-#login:hover {background-color: var(--knt-green);}
-#login a:hover {color: var(--knt-white);}
 
 .cover {
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6)), url('../imgs/cover.jpg');
@@ -197,43 +190,52 @@ body {
 }
 
 @media (max-width: 600px) {
-    #header {
-        padding: 5%;
-    }
-    #register {
-        display: none;
-    }
+    #header {padding: 5%;}
+    #register {display: none;}
     #login {margin: 0;}
-
-    .cover {
-        padding-top: 25%;
-    }
-
-    .cover h1 {
-        font-size: 50px;
-    }
+    .cover {padding-top: 25%;}
+    .cover h1 {font-size: 50px;}
 }
 
-/*section **************+*/
-
-.section {
-    height: 1000px;
-    background-color: rgb(15, 15, 15);
-}
+/*Footer **************+*/
 
 #footer {
+    padding: 3%;
     background-color: rgb(15, 15, 15);
-    height: 200px;
-    border: 1px solid red;
+    color: var(--knt-white);
 }
 
+.footer__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 40px;
+    align-items: center;
+}
 
 .footer__content img {
-    background-color: #fff;
-    border: 1px solid red;
-    border-radius: 25%;
-    width: 50px;
+    background-color: var(--knt-white);
+    border-radius: 10px;
+    width: 60px;
     height: auto;
+}
+
+.authors span {
+    font-size: 25px;
+    font-weight: 100;
+    padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+    .authors span {
+        display: block;
+        text-align: center;
+        margin-bottom: 20px;
+        width: 100%;
+        font-size: 20px;
+        font-weight: 100;
+        padding: 0 10px;
+    }
 }
 
 /* Utility *********************** */
