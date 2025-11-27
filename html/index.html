@@ -55,21 +55,5 @@
         </div>
         
     </footer>
-
-
-    <script>
-        /* ---------- Menu appear / disappear on scrool ----------- */
-        let lastScroolTop = 0;
-        let navbar = document.querySelector("#header");
-        window.addEventListener('scroll', () => {
-        var scrollTop = window.scrollY;
-        if (scrollTop > lastScroolTop) {
-            navbar.classList.add("show-nav");
-        } else {
-            navbar.classList.remove("show-nav");
-        }
-        lastScroolTop = scrollTop;
-        });
-    </script>
 </body>
 </html>
