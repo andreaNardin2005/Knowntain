@@ -182,7 +182,7 @@ components:
       properties:
         type:
           type: string
-          enum: [Point, Polygon]  # aggiungi altri tipi se vuoi
+          enum: [Point, Polygon]
           example: Point
         coordinates:
           type: array
