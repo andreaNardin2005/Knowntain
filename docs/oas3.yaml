@@ -2,7 +2,7 @@ openapi: 3.0.4
 info:
   version: '1.0'
   title: "Knowntain OpenAPI 3.0"
-  description: APIs for managing book lendings.
+  description: APIs for managing geographical and environmental data.
   license:
     name: MIT
 servers:
