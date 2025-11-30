@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
+import geoJson from './geoJson.js';
 
 const SegnalazioneSchema = new Schema({
     titolo: { type: String, required: true },
@@ -13,15 +14,8 @@ const SegnalazioneSchema = new Schema({
         ref: 'Dipendente'
     },
     posizione: {
-        type: {
-            type: String,
-            enum: ['Point'], // deve essere sempre "Point"
-            required: true
-        },
-        coordinates: {
-            type: [Number],   // array di numeri
-            required: true    // [lon, lat] !IMP: seguire questo ordine prima lon, poi lat
-        }
+        type: geoJson,
+        required: true
     },
     tipo: {
         type: String,
