@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'fs';
 import yaml from 'js-yaml';
+import cors from 'cors';
 
 // Routers
 import utente from './routers/utente.js';
@@ -21,8 +22,11 @@ const swaggerDocument = yaml.load(readFileSync(Path.join(__dirname, '..', './doc
 // Creazione dell'applicazione Express
 const app = express();
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// CORS 
+app.use(cors());
 
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 
