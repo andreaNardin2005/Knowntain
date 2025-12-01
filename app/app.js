@@ -7,6 +7,7 @@ import yaml from 'js-yaml';
 import cors from 'cors';
 
 // Routers
+import auth from './routers/auth.js';
 import utente from './routers/utente.js';
 import dipendente from './routers/dipendente.js';
 import segnalazione from './routers/segnalazione.js';
@@ -32,6 +33,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Middleware per fare il parsing json
 app.use(express.json());
+
+
+// Authentication routing and middleware
+app.use('/auth',auth);
 
 app.use('/utenti',utente);
 app.use('/dipendenti',dipendente);
