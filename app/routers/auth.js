@@ -12,16 +12,16 @@ function createToken(user) {
 	}
 
 	let options = {
-		expiresIn: 86400 // expires in 24 hours
+		expiresIn: 86400 // scade dopo 24h
 	}
 
-    // JWT token creation
+    // creazione JWT token
 	return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
 
 async function getModel(req) {
     let mod;
-    if (req.body.role === 'utente') {
+    if (req.body.ruolo === 'utente') {
         // Se utente
         // lazy import del model
         mod = await import('../models/utente.js');
@@ -34,33 +34,33 @@ async function getModel(req) {
 }
 
 router.post('/login', async (req,res,next) => {
-    // TODO: Login con Google
+    // TODO: Login con Google ******************
     let user = {};
-    // Ottiene il model dell'utente guardando la request
-    // console.log(req.body);
+
+    // Ottiene il model dell'utente guardando l'attributo 'ruolo' della request
     let Model = await getModel(req);
     
+    // Cerca un utente associato alla mail inserita nel body della request
     user = await Model.findOne(
         {email: req.body.email}
     ).exec();
 
-    // local user not found
+    // Se utente non trovato, return
     if (!user) {
-        res.status(401).json({message: 'Authentication failed. User not found.' });
+        res.status(401).json({success: false, message: 'Authentication failed. User not found.' });
         return;
     }
 
-    // check if password matches
+    // Controlla se la password matcha
     if (user.password != req.body.password) {
-        res.status(401).json({message: 'Authentication failed. Wrong password.' });
+        res.status(401).json({success: false, message: 'Authentication failed. Wrong password.' });
         return;
     }
 
-    // if user is found or created create a token
-    
+    // Se l'utente ha passato i controlli sopra viene creato un token
     const token = createToken(user);
 
-    let route = (req.body.role === 'utente') ? '/utenti/' : '/dipendenti/';
+    let route = (req.body.ruolo === 'utente') ? '/utenti/' : '/dipendenti/';
 	res.json({
 		success: true,
 		message: 'Enjoy your token!',
@@ -72,15 +72,19 @@ router.post('/login', async (req,res,next) => {
 });
 
 
-router.post('/register', async (req,res,next) => {
+router.post('/register', async (req,res) => {
+
+    // importa model utente, dal momento che la registrazione è solo per gli utenti
     const mod = await import('../models/utente.js');
     const Utente = mod.default;
 
-    if (!req.body.email || !req.body.password || !req.body.name || !req.body.surname || !req.body.nickname) {
-        res.status(400).json({message: 'Invalid input data'});
+    // Controlla che tutti gli attributi richiesti siano definiti
+    if (!req.body.email || !req.body.password || !req.body.nome || !req.body.cognome || !req.body.nickname) {
+        res.status(400).json({success: false, message: 'Invalid input data'});
         return;
     }
 
+    // Cerca l'estistenza di un untente con lo stesso nickname o email
     const used = await Utente.findOne({
         $or: [
             { email: req.body.email },
@@ -88,23 +92,25 @@ router.post('/register', async (req,res,next) => {
         ]
     }).exec();
 
+    // Se esiste viene segnalato un errore di conflitto
     if (used) {
-        res.status(409).json({message: 'Email or Nickname already in use'});
+        res.status(409).json({success: false, message: 'Email or Nickname already in use'});
         return;
     }
 
+    // Crea un nuovo documento nella collection Utente e lo salva sul DB
     let user = await Utente.create({
-        nome: req.body.name,
-        cognome: req.body.surname,
+        nome: req.body.nome,
+        cognome: req.body.cognome,
         nickname: req.body.nickname,
         email: req.body.email,
         password: req.body.password
     });
 
-    console.log(user);
-
+    // Crea il token per il nuovo utente
     const token = createToken(user);
 
+    // Completata la registrazione l'utente viene loggato nella sua dashboard
     res.json({
 		success: true,
 		message: 'Enjoy your token!',
@@ -114,7 +120,6 @@ router.post('/register', async (req,res,next) => {
 		self: '/utenti/' + user._id
 	});
 });
-
 
 
 export default router;
