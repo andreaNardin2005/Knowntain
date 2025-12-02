@@ -1,2 +1,2 @@
 # Knowntain
-A biodiversity map
+A biodiverity map
