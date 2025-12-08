@@ -35,6 +35,10 @@ const SegnalazioneSchema = new Schema({
         enum: ['Aperta','Validata','Rifiutata'],
         required: true
     },
+    punti: {
+        type: Number,
+        default: 0
+    },
     foto: [Buffer]
 });
 

@@ -59,7 +59,7 @@ router.post('/login', async (req,res,next) => {
 
     // Se l'utente ha passato i controlli sopra viene creato un token
     const token = createToken(user);
-
+    
     let route = (req.body.ruolo === 'utente') ? '/utenti/' : '/dipendenti/';
 	res.json({
 		success: true,
