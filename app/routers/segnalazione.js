@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
+        // Cerco sul DB tutte le segnalazioni marcate come 'Validate'
         const segnalazioni = await Segnalazione.find({ stato: 'Validata' }).exec();
         res.json(segnalazioni);
     } catch (err) {
@@ -15,12 +16,14 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req,res) => {
 
+    // controllo che la richiesta abbia tutti i dati obbligatori, altrimenti errore
     if (!req.body.titolo || !req.body.descrizione || !req.body.posizione || !req.body.tipo) {
         res.status(400).json({success: false, message: 'Invalid input data'});
         return;
     }
 
     try {
+        // provo a salvare la nuova segnalazione sul DB con i dati forniti
         let segnalazione = await Segnalazione.create({
             titolo: req.body.titolo,
             descrizione: req.body.descrizione,
