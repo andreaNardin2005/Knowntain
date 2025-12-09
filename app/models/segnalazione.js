@@ -21,7 +21,7 @@ const SegnalazioneSchema = new Schema({
         type: String,
         enum: [
             'Avvistamento Faunistico',
-            'Codizioni Meteo',
+            'Condizioni Meteo',
             'Manutenzione Sentieri',
             'Caduta Alberi',
             'Pericolo Frane',
@@ -33,6 +33,7 @@ const SegnalazioneSchema = new Schema({
     stato: {
         type: String,
         enum: ['Aperta','Validata','Rifiutata'],
+        default: 'Aperta',
         required: true
     },
     punti: {

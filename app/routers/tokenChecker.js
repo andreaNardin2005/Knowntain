@@ -23,7 +23,6 @@ const tokenCheker = (req,res,next) => {
 			// Se tutto è andato a buon fine il payload viene aggiunto 
             // alla richiesta per essere usato nelle routes successive
 			req.loggedUser = decoded;
-            //console.log(req.loggedUser);
 			next();
 		}
 	});
