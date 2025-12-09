@@ -13,6 +13,7 @@ import utente from './routers/utente.js';
 import dipendente from './routers/dipendente.js';
 import segnalazione from './routers/segnalazione.js';
 import iniziativa from './routers/iniziativa.js';
+import classifica from './routers/classifica.js';
 
 // Determina __dirname in ES module scope
 const __filename = fileURLToPath(import.meta.url);
@@ -49,6 +50,7 @@ app.use('/utenti', tokenCheker, utente);
 app.use('/dipendenti', tokenCheker, dipendente);
 app.use('/segnalazioni', tokenCheker, segnalazione);
 app.use('/iniziative', tokenCheker, iniziativa);
+app.use('/classifica', tokenCheker, classifica);
 
 
 
@@ -59,7 +61,7 @@ app.use('/iniziative', tokenCheker, iniziativa);
 // Default 404 handler
 app.use((req, res) => {
     res.status(404);
-    res.json({ error: 'Not found' });
+    res.json({ error: 'Route Not found' });
 });
 
 
