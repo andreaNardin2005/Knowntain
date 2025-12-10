@@ -5,7 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import { readFileSync } from 'fs';
 import yaml from 'js-yaml';
 import cors from 'cors';
-import tokenCheker from './routers/tokenChecker.js';
+import tokenCheker from './middlewares/tokenChecker.js';
 
 // Routers
 import auth from './routers/auth.js';

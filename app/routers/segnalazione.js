@@ -2,6 +2,7 @@ import express from 'express';
 import Segnalazione from '../models/segnalazione.js';
 import Dipendente from '../models/dipendente.js';
 import Utente from '../models/utente.js';
+import Iniziativa from '../models/iniziativa.js';
 
 const router = express.Router();
 
@@ -99,9 +100,13 @@ router.patch('/:id', async (req,res) => {
             });
         }
 
+        // Incremento i punti utente nel campo dedicato nel DB
         utente.punti += segnalazione.punti;
 
-        // Salvo le modifiche su MongoDB
+        // Aggiorno tutte le iniziative incrementando il campo punti di 100
+        await Iniziativa.updateMany({}, { $inc: { punti: 100 } });
+
+        // Salvo le modifiche sull'utente e sulla segnalazione su MongoDB
         await segnalazione.save();
         await utente.save();
         res.json(segnalazione);
