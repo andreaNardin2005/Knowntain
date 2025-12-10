@@ -1,7 +1,6 @@
 import express from 'express';
 import Iniziativa from '../models/iniziativa.js';
 import Dipendente from '../models/dipendente.js';
-import dipendente from '../models/dipendente.js';
 
 const router = express.Router();
 

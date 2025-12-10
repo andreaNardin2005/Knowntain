@@ -3,89 +3,90 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-function createToken(user) {
-    let payload = {
-		email: user.email,
-		id: user._id,
-        nome: user.nome,
-        cognome: user.cognome
-	}
+const roleToRoute = {
+    utente: 'utenti',
+    dipendente: 'dipendenti'
+};
 
-	let options = {
-		expiresIn: 86400 // scade dopo 24h
-	}
+
+function createToken(user) {
+    const payload = {
+        id: user._id,
+        email: user.email,
+        nome: user.nome,
+        cognome: user.cognome,
+        ruolo: user.ruolo,
+    };
+
+    // scade dopo 24h
+	const options = { expiresIn: 86400 };
 
     // creazione JWT token
 	return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
 
-async function getModel(req) {
-    let mod;
-    if (req.body.ruolo === 'utente') {
-        // Se utente
-        // lazy import del model
-        mod = await import('../models/utente.js');
-    } else {
-        // Se dipendente
-        // lazy import del model
-        mod = await import('../models/dipendente.js');
-    }
-    return mod.default;
+async function findUserByEmail(email) {
+    const Utente = (await import('../models/utente.js')).default;
+    const Dipendente = (await import('../models/dipendente.js')).default;
+
+    let user = await Utente.findOne({ email });
+    if (user) return user;
+
+    user = await Dipendente.findOne({ email });
+    return user;
 }
 
+// ***************** LOGIN UTENTE-DIPENDENTE ***************************
 router.post('/login', async (req,res) => {
-    // TODO: Login con Google ******************
-    let user = {};
 
-    // Ottiene il model dell'utente guardando l'attributo 'ruolo' della request
-    let Model = await getModel(req);
-    
-    // Cerca un utente associato alla mail inserita nel body della request
-    user = await Model.findOne(
-        {email: req.body.email}
-    ).exec();
+    const { email, password } = req.body;
 
-    // Se utente non trovato, return
-    if (!user) {
-        res.status(401).json({success: false, message: 'Authentication failed. User not found.' });
-        return;
+    if (!email || !password) {
+        return res.status(400).json({ success: false, message: 'Credenziali mancanti' });
     }
 
-    // Controlla se la password matcha
-    if (user.password != req.body.password) {
-        res.status(401).json({success: false, message: 'Authentication failed. Wrong password.' });
+    const user = await findUserByEmail(email);
+
+    // Se utente non trovato, errore
+    if (!user) {
+        return res.status(401).json({
+            success: false,
+            message: 'Autenticazione fallita. Utente non trovato' 
+        });
+    }
+
+    // Controlla se la password matcha (aggiungere bcrypt)
+    if (user.password != password) {
+        res.status(401).json({success: false, message: 'Autenticazione fallita' });
         return;
     }
 
     // Se l'utente ha passato i controlli sopra viene creato un token
     const token = createToken(user);
 
-    let route = (req.body.ruolo === 'utente') ? '/utenti/' : '/dipendenti/';
 	res.json({
 		success: true,
 		message: 'Enjoy your token!',
 		token: token,
 		email: user.email,
 		id: user._id,
-		self: route + user._id
+		self: `/${roleToRoute[user.ruolo]}/${user._id}`
 	});
 });
 
-
+// ***************** REGISTRAZIONE UTENTI ***************************
 router.post('/register', async (req,res) => {
 
     // importa model utente, dal momento che la registrazione è solo per gli utenti
-    const mod = await import('../models/utente.js');
-    const Utente = mod.default;
+    const Utente = (await import('../models/utente.js')).default;
 
     // Controlla che tutti gli attributi richiesti siano definiti
     if (!req.body.email || !req.body.password || !req.body.nome || !req.body.cognome || !req.body.nickname) {
-        res.status(400).json({success: false, message: 'Invalid input data'});
-        return;
+        return res.status(400).json({success: false, message: 'Invalid input data'});
     }
 
-    // Cerca l'estistenza di un untente con lo stesso nickname o email
-    const used = await Utente.findOne({
+    // Cerca l'estistenza di un utente con lo stesso nickname o email
+    const isUsed = await Utente.findOne({
         $or: [
             { email: req.body.email },
             { nickname: req.body.nickname }
@@ -93,9 +94,11 @@ router.post('/register', async (req,res) => {
     }).exec();
 
     // Se esiste viene segnalato un errore di conflitto
-    if (used) {
-        res.status(409).json({success: false, message: 'Email or Nickname already in use'});
-        return;
+    if (isUsed) {
+        return res.status(409).json({
+            success: false, 
+            message: 'Email o Nickname già utilizzati'
+        });
     }
 
     // Crea un nuovo documento nella collection Utente e lo salva sul DB
@@ -117,7 +120,7 @@ router.post('/register', async (req,res) => {
 		token: token,
 		email: user.email,
 		id: user._id,
-		self: '/utenti/' + user._id
+		self: `/${roleToRoute[user.ruolo]}/${user._id}`
 	});
 });
 

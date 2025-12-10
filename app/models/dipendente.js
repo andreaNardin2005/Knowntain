@@ -5,7 +5,8 @@ const DipendenteSchema = new Schema({
     cognome: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    isAdmin: { type: Boolean, required: true }
+    isAdmin: { type: Boolean, required: true },
+    ruolo: { type: String, enum: ['dipendente'], default: 'dipendente' }
 });
 
 /* Il terzo parametro serve a dare il nome corretto alla collection

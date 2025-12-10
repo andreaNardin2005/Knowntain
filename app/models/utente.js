@@ -6,7 +6,8 @@ const UtenteSchema = new Schema({
     nickname: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    punti: { type: Number, default: 0 }
+    punti: { type: Number, default: 0 },
+    ruolo: { type: String, enum: ['utente'], default: 'utente' }
 });
 
 export default mongoose.model('Utente', UtenteSchema,'utenti');

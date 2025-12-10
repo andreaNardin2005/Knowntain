@@ -43,7 +43,7 @@ app.use((req,res,next) => {
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Authentication routing and middleware
+// Authentication middleware
 app.use('/auth', auth);
 
 app.use('/utenti', tokenCheker, utente);
