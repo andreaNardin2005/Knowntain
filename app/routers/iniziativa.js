@@ -1,6 +1,7 @@
 import express from 'express';
 import Iniziativa from '../models/iniziativa.js';
 import Dipendente from '../models/dipendente.js';
+import requireBody from '../middlewares/requireBody.js';
 
 const router = express.Router();
 
@@ -20,15 +21,8 @@ router.get('/', async (req,res) => {
 });
 
 // Inserimento di una nuova iniziativa
-router.post('/', async (req,res) => {
+router.post('/', requireBody(['titolo','descrizione','puntiObiettivo']), async (req,res) => {
     try {
-        if (!req.body.titolo || !req.body.descrizione || !req.body.puntiObiettivo) {
-            return res.status(400).send({
-                success: false,
-                message: 'La richiesta per la creazione di una nuova iniziativa è incompleta'
-            });
-        }
-
         // Cerco lo user loggato nella collection Dipendente
         const dipendente = await Dipendente.findById(req.loggedUser.id).select('-password -__v');
         

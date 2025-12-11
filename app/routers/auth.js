@@ -1,5 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import requireBody from '../middlewares/requireBody.js';
 
 const router = express.Router();
 
@@ -7,7 +8,6 @@ const roleToRoute = {
     utente: 'utenti',
     dipendente: 'dipendenti'
 };
-
 
 function createToken(user) {
     const payload = {
@@ -37,13 +37,9 @@ async function findUserByEmail(email) {
 }
 
 // ***************** LOGIN UTENTE-DIPENDENTE ***************************
-router.post('/login', async (req,res) => {
+router.post('/login', requireBody(['email','password']), async (req,res) => {
 
     const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.status(400).json({ success: false, message: 'Credenziali mancanti' });
-    }
 
     const user = await findUserByEmail(email);
 
@@ -61,7 +57,7 @@ router.post('/login', async (req,res) => {
         return;
     }
 
-    // Se l'utente ha passato i controlli sopra viene creato un token
+    // Se l'utente ha passato i controlli sopra sopra viene creato un token
     const token = createToken(user);
 
 	res.json({
@@ -75,21 +71,19 @@ router.post('/login', async (req,res) => {
 });
 
 // ***************** REGISTRAZIONE UTENTI ***************************
-router.post('/register', async (req,res) => {
+router.post('/register', requireBody(['email','password','nome','cognome','nickname']), async (req,res) => {
 
     // importa model utente, dal momento che la registrazione è solo per gli utenti
     const Utente = (await import('../models/utente.js')).default;
 
-    // Controlla che tutti gli attributi richiesti siano definiti
-    if (!req.body.email || !req.body.password || !req.body.nome || !req.body.cognome || !req.body.nickname) {
-        return res.status(400).json({success: false, message: 'Invalid input data'});
-    }
+    // Spacchetto i campi della richiesta
+    const { email, password, nome, cognome, nickname } = req.body;
 
     // Cerca l'estistenza di un utente con lo stesso nickname o email
     const isUsed = await Utente.findOne({
         $or: [
-            { email: req.body.email },
-            { nickname: req.body.nickname }
+            { email: email },
+            { nickname: nickname }
         ]
     }).exec();
 
@@ -103,11 +97,11 @@ router.post('/register', async (req,res) => {
 
     // Crea un nuovo documento nella collection Utente e lo salva sul DB
     let user = await Utente.create({
-        nome: req.body.nome,
-        cognome: req.body.cognome,
-        nickname: req.body.nickname,
-        email: req.body.email,
-        password: req.body.password
+        nome: nome,
+        cognome: cognome,
+        nickname: nickname,
+        email: email,
+        password: password
     });
 
     // Crea il token per il nuovo utente

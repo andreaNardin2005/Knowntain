@@ -6,5 +6,5 @@ const PORT = process.env.PORT || 8080;
 await connectDB();
 
 app.listen(PORT, () => {
-    console.log(`Server is listening on port:${PORT}`);
+    console.log(`Server in ascolto sulla porta ${PORT} ...`);
 });

@@ -3,6 +3,7 @@ import Segnalazione from '../models/segnalazione.js';
 import Dipendente from '../models/dipendente.js';
 import Utente from '../models/utente.js';
 import Iniziativa from '../models/iniziativa.js';
+import requireBody from '../middlewares/requireBody.js';
 
 const router = express.Router();
 
@@ -21,14 +22,7 @@ router.get('/', async (req, res) => {
 });
 
 
-router.post('/', async (req,res) => {
-
-    // controllo che la richiesta abbia tutti i dati obbligatori, altrimenti errore
-    if (!req.body.titolo || !req.body.descrizione || !req.body.posizione || !req.body.tipo) {
-        res.status(400).json({ success: false, message: 'Invalid input data' });
-        return;
-    }
-
+router.post('/', requireBody(['titolo','descrizione','posizione','tipo']), async (req,res) => {
     try {
         // provo a salvare la nuova segnalazione sul DB con i dati forniti
         const segnalazione = await Segnalazione.create({
@@ -48,15 +42,8 @@ router.post('/', async (req,res) => {
     }
 });
 
-router.patch('/:id', async (req,res) => {
-    // Controllo che venga passato nella richiesta il nuovo stato per la segnalazione
-    if (!req.body.stato) {
-        return res.status(400).send({
-            success: false,
-            message: 'Stato segnalazione non trovato nella richiesta'
-        });
-    }
-
+router.patch('/:id', requireBody(['stato']), async (req,res) => {
+    
     try {
         // Cerco lo user loggato nella collection Dipendente
         const dipendente = await Dipendente.findById(req.loggedUser.id).select('-password -__v');
