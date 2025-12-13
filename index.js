@@ -1,5 +1,5 @@
 import app from './app/app.js';
-import { connectDB } from './app/db.js';
+import { connectDB } from './app/utils/db.js';
 const PORT = process.env.PORT || 8080;
 
 // Funzione che tenta la connessione a DB Mongo Atlas

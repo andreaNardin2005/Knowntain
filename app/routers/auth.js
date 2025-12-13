@@ -1,7 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import requireBody from '../middlewares/requireBody.js';
-import { isStrongPassword, isValidEmail } from '../middlewares/validators.js';
+import { isStrongPassword, isValidEmail } from '../utils/validators.js';
 
 const router = express.Router();
 
