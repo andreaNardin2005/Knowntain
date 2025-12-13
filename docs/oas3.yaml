@@ -8,8 +8,8 @@ info:
 servers:
   - url: http://localhost:8080/
     description: Localhost
-  #- url: https://knowntain.onrender.com/api/v1
-    #description: render.com
+  - url: https://knowntain-x4b7.onrender.com/
+    description: render.com
 paths:
 # Register **************************************************************
     /auth/register:
@@ -86,6 +86,7 @@ paths:
                 schema:
                   type: array
                   items: {$ref: '#/components/schemas/Segnalazione'}
+
 
 
 

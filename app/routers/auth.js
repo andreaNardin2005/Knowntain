@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import requireBody from '../middlewares/requireBody.js';
+import { isStrongPassword, isValidEmail } from '../middlewares/validators.js';
 
 const router = express.Router();
 
@@ -79,6 +80,14 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
     // Spacchetto i campi della richiesta
     const { email, password, nome, cognome, nickname } = req.body;
 
+    // Controlla se il formato della mail è corretto
+    if (!isValidEmail(req.body.email)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Email non valida'
+        });
+    }
+
     // Cerca l'estistenza di un utente con lo stesso nickname o email
     const isUsed = await Utente.findOne({
         $or: [
@@ -92,6 +101,14 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
         return res.status(409).json({
             success: false, 
             message: 'Email o Nickname già utilizzati'
+        });
+    }
+
+    // Controlla i requisiti minimi della password
+    if (!isStrongPassword(password)) {
+        return res.status(400).json({
+            success: false, 
+            message: 'Password debole. La password deve essere lunga almeno 8 caratteri e contenere almeno una lettera maiuscola, una lettera minuscola, un numero e un carattere speciale.'
         });
     }
 

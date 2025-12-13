@@ -38,7 +38,7 @@ app.use(cors());
 app.use((req,res,next) => {
     console.log(req.method + ' ' + req.url);
     next();
-})
+});
 
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
