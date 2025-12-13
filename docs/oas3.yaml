@@ -20,13 +20,13 @@ paths:
           required: true
           content:
             application/json:
-              schema : {$ref: '#/components/schemas/RegisterRequest'}
+              schema : { $ref: '#/components/schemas/RegisterRequest' }
         responses: 
           '201':
             description: Registrazione valida
             content:
               application/json:
-                schema: {$ref: '#/components/schemas/AuthResponse'}
+                schema: { $ref: '#/components/schemas/AuthResponse' }
           '400':
             description: Richiesta non valida
             content:

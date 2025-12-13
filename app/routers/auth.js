@@ -81,7 +81,7 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
     const { email, password, nome, cognome, nickname } = req.body;
 
     // Controlla se il formato della mail è corretto
-    if (!isValidEmail(req.body.email)) {
+    if (!isValidEmail(email)) {
         return res.status(400).json({
             success: false,
             message: 'Email non valida'
