@@ -14,6 +14,7 @@ import dipendente from './routers/dipendente.js';
 import segnalazione from './routers/segnalazione.js';
 import iniziativa from './routers/iniziativa.js';
 import classifica from './routers/classifica.js';
+import mappa from './routers/mappa.js';
 
 // Determina __dirname in ES module scope
 const __filename = fileURLToPath(import.meta.url);
@@ -51,7 +52,7 @@ app.use('/dipendenti', tokenCheker, dipendente);
 app.use('/segnalazioni', tokenCheker, segnalazione);
 app.use('/iniziative', tokenCheker, iniziativa);
 app.use('/classifica', tokenCheker, classifica);
-
+app.use('/mappa', tokenCheker, mappa);
 
 
 

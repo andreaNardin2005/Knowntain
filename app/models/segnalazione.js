@@ -4,6 +4,7 @@ import geoJson from './geoJson.js';
 const SegnalazioneSchema = new Schema({
     titolo: { type: String, required: true },
     descrizione: { type: String, required: true },
+    data: { type: Date, required: true, default: Date.now },
     utente: {
         type: Schema.Types.ObjectId, 
         ref: 'Utente',
