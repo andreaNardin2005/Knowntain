@@ -66,6 +66,7 @@ router.post('/login', requireBody(['email','password']), async (req,res) => {
 		message: 'Enjoy your token!',
 		token: token,
 		email: user.email,
+        role: user.ruolo,
 		id: user._id,
 		self: `/${roleToRoute[user.ruolo]}/${user._id}`
 	});
@@ -125,7 +126,7 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
     const token = createToken(user);
 
     // Completata la registrazione l'utente viene loggato nella sua dashboard
-    res.json({
+    res.status(201).json({
 		success: true,
 		message: 'Enjoy your token!',
 		token: token,
