@@ -55,8 +55,10 @@ app.use('/classifica', tokenCheker, classifica);
 app.use('/mappa', tokenCheker, mappa);
 
 
-
-
+// Caso di Test per verificare che la App risponda
+app.get('/health', (req,res) => 
+    res.status(200).json({ status: 'ok', uptime: process.uptime() })
+);
 
 
 // Default 404 handler

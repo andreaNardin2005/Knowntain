@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/me', async (req, res) => {
   try {
-    // tokenChecker aggiunge req.loggedUser 
+    // tokenChecker aggiunge req.loggedUser
     // cerco l'utente per id escludendo password e versione
     const user = await Utente.findById(req.loggedUser.id).select('-password -__v');
 

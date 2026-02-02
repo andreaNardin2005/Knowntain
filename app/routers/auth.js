@@ -26,23 +26,19 @@ function createToken(user) {
 	return jwt.sign(payload, process.env.JWT_SECRET, options);
 }
 
-async function findUserByEmail(email) {
-    const Utente = (await import('../models/utente.js')).default;
-    const Dipendente = (await import('../models/dipendente.js')).default;
-
-    let user = await Utente.findOne({ email });
-    if (user) return user;
-
-    user = await Dipendente.findOne({ email });
-    return user;
-}
 
 // ***************** LOGIN UTENTE-DIPENDENTE ***************************
-router.post('/login', requireBody(['email','password']), async (req,res) => {
+router.post('/login', requireBody(['email','password','ruolo']), async (req,res) => {
 
-    const { email, password } = req.body;
+    const { email, password, ruolo } = req.body;
 
-    const user = await findUserByEmail(email);
+    // Importo la Collection corretta in base al ruolo
+    const Collection = (ruolo === 'utente') ? 
+    (await import('../models/utente.js')).default : 
+    (await import('../models/dipendente.js')).default;
+
+    // Cerco l'utente nella Collection importata
+    const user = await Collection.findOne({ email });
 
     // Se utente non trovato, errore
     if (!user) {
@@ -131,6 +127,7 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
 		message: 'Enjoy your token!',
 		token: token,
 		email: user.email,
+        role: user.ruolo,
 		id: user._id,
 		self: `/${roleToRoute[user.ruolo]}/${user._id}`
 	});
