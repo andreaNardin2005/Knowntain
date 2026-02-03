@@ -21,7 +21,7 @@ router.get('/me', async (req, res) => {
     const segnObj = segnalazioni.map(s => s.toObject());
     merge.segnalazioni = segnObj;
 
-    res.json(merge);
+    res.status(200).json(merge);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
