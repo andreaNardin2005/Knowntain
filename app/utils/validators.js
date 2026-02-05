@@ -1,3 +1,4 @@
+/* Funzioni riutilizzabili */
 function isStrongPassword(password) {
     const minLength = 8;
     const hasUpper = /[A-Z]/.test(password);
