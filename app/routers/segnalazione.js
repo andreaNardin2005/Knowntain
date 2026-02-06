@@ -73,8 +73,17 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
         // Salvo il dipendente nel campo dedicato nella segnalazione
         segnalazione.dipendente = dipendente._id;
 
-        // Assegno 100 punti alla segnalazione
-        segnalazione.punti = 100;
+        // Se viene validata
+        if (segnalazione.stato === 'Validata') {
+            // Assegno 100 punti alla segnalazione
+            segnalazione.punti = 100;
+            
+            // Incremento i punti utente nel campo dedicato nel DB
+            utente.punti += segnalazione.punti;
+
+            // Aggiorno tutte le iniziative incrementando il campo punti di 100
+            await Iniziativa.updateMany({}, { $inc: { punti: 100 } });
+        }
 
         // Cerco L'utente associato alla segnalazione
         const utente = await Utente.findById(segnalazione.utente);
@@ -86,12 +95,6 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
                 message: 'Utente non trovato'
             });
         }
-
-        // Incremento i punti utente nel campo dedicato nel DB
-        utente.punti += segnalazione.punti;
-
-        // Aggiorno tutte le iniziative incrementando il campo punti di 100
-        await Iniziativa.updateMany({}, { $inc: { punti: 100 } });
 
         // Salvo le modifiche sull'utente e sulla segnalazione su MongoDB
         await segnalazione.save();
