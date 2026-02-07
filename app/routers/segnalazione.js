@@ -11,16 +11,15 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         let segnalazioni = [];
-
         // controllo quale è il tipo di utente
-        if (req.loggedUser.role === 'dipendente') {
+        if (req.loggedUser.ruolo === 'dipendente') {
             // Se è un dipendente ritorno tutte le segnalazioni
             segnalazioni = await Segnalazione.find({}).exec();
         } else {
             // Se è un utente ritorno solo quelle validate
             segnalazioni = await Segnalazione.find({ stato: 'Validata' }).exec();
         }
-        
+
         res.json(segnalazioni);
     } catch (err) {
         res.status(500).json({
