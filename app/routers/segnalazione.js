@@ -14,10 +14,15 @@ router.get('/', async (req, res) => {
         // controllo quale è il tipo di utente
         if (req.loggedUser.ruolo === 'dipendente') {
             // Se è un dipendente ritorno tutte le segnalazioni
-            segnalazioni = await Segnalazione.find({}).exec();
+            segnalazioni = await Segnalazione
+                .find({})
+                .sort({ stato: 1 })
+                .exec();
         } else {
             // Se è un utente ritorno solo quelle validate
-            segnalazioni = await Segnalazione.find({ stato: 'Validata' }).exec();
+            segnalazioni = await Segnalazione
+                .find({ stato: 'Validata' })
+                .exec();
         }
 
         res.json(segnalazioni);
