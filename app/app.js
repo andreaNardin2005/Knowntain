@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS 
 app.use(cors());
-app.options('*', cors());
+app.options(/.*/, cors());
 
 // Middleware che logga in console le richieste effettuate
 app.use((req,res,next) => {
