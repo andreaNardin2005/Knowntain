@@ -18,11 +18,14 @@ jest.unstable_mockModule('../app/middlewares/requireBody.js', () => ({
 jest.unstable_mockModule('../app/models/segnalazione.js', () => ({
   default: {
     find: jest.fn(() => ({
-      exec: jest.fn().mockResolvedValue([
-        { _id: 's1', titolo: 'Segnalazione 1', stato: 'Validata' },
-        { _id: 's2', titolo: 'Segnalazione 2', stato: 'Validata' }
-      ])
+      sort: jest.fn(() => ({
+        exec: jest.fn().mockResolvedValue([
+          { _id: 's1', titolo: 'Segnalazione 1', stato: 'Validata' },
+          { _id: 's2', titolo: 'Segnalazione 2', stato: 'Validata' }
+        ])
+      }))
     })),
+
     findById: jest.fn((id) => ({
       save: jest.fn().mockResolvedValue(true),
       _id: id,
