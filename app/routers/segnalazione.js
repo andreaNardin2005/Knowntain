@@ -86,6 +86,9 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
         // Salvo il dipendente nel campo dedicato nella segnalazione
         segnalazione.dipendente = dipendente._id;
 
+        // Cerco L'utente associato alla segnalazione
+        const utente = await Utente.findById(segnalazione.utente);
+
         // Se viene validata
         if (segnalazione.stato === 'Validata') {
             // Assegno 100 punti alla segnalazione
@@ -98,8 +101,6 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
             await Iniziativa.updateMany({}, { $inc: { punti: 100 } });
         }
 
-        // Cerco L'utente associato alla segnalazione
-        const utente = await Utente.findById(segnalazione.utente);
 
         // Se non viene trovata corrispondenza ritorno un errore
         if (!utente) {
