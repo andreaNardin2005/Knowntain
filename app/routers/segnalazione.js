@@ -89,6 +89,14 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
         // Cerco L'utente associato alla segnalazione
         const utente = await Utente.findById(segnalazione.utente);
 
+        // Se non viene trovata corrispondenza ritorno un errore
+        if (!utente) {
+            return res.status(404).json({
+                success: false,
+                message: 'Utente non trovato'
+            });
+        }
+
         // Se viene validata
         if (segnalazione.stato === 'Validata') {
             // Assegno 100 punti alla segnalazione
@@ -99,15 +107,6 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
 
             // Aggiorno tutte le iniziative incrementando il campo punti di 100
             await Iniziativa.updateMany({}, { $inc: { punti: 100 } });
-        }
-
-
-        // Se non viene trovata corrispondenza ritorno un errore
-        if (!utente) {
-            return res.status(404).json({
-                success: false,
-                message: 'Utente non trovato'
-            });
         }
 
         // Salvo le modifiche sull'utente e sulla segnalazione su MongoDB
