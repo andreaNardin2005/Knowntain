@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 
 const tokenCheker = (req,res,next) => {
+	// Salta l'auth per options
+	if (req.method === 'OPTIONS') {
+    	return next();
+  	}
     // Controlla se il token è inserito nell'header
 	const token = req.headers['access-token'];
 
@@ -18,7 +22,7 @@ const tokenCheker = (req,res,next) => {
 			return res.status(403).send({
 				success: false,
 				message: 'Failed to authenticate token'
-			});		
+			});
 		} else {
 			// Se tutto è andato a buon fine il payload viene aggiunto 
             // alla richiesta per essere usato nelle routes successive
