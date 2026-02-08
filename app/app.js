@@ -34,7 +34,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS 
 app.use(cors());
-app.options(/.*/, cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://localhost:5173',
+    'https://knowntain.onrender.com'
+  ],
+  methods: ['GET','POST','PUT','PATCH','DELETE'],
+  allowedHeaders: ['Content-Type','access-token']
+}));
 
 // Middleware che logga in console le richieste effettuate
 app.use((req,res,next) => {
