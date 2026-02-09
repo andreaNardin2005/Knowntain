@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/', async (req,res) => {
     try {
         /*
-        Estraggo dal DB per ogni utente il nickname e i suoi punti
+        Estraggo dal DB per ogni utente il nickname e i suoi puntiTot
         ordinando il risultato per punti in modo decrescente e
         con .lean() trasformo il documento mongoose in un array JS plain
         per poterlo manipolare
