@@ -12,7 +12,7 @@ router.get('/', async (req,res) => {
         per poterlo manipolare
         */
         const utenti = await Utente.find()
-                                   .select('nickname punti')
+                                   .select('nickname puntiTot')
                                    .sort({puntiTot: 'desc'})
                                    .lean();
 
