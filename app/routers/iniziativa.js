@@ -51,7 +51,7 @@ router.post('/', requireBody(['titolo','descrizione','puntiObiettivo']), async (
     }
 });
 
-router.patch('/:id', requireBody['puntiAssegnati'], async (req,res) => {
+router.patch('/:id', requireBody(['puntiAssegnati']), async (req,res) => {
     try {
         // Trasformo i punti arrivati come stringa in numero
         const puntiAssegnati = Number(req.body.puntiAssegnati);
