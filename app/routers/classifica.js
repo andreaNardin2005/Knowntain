@@ -13,7 +13,7 @@ router.get('/', async (req,res) => {
         */
         const utenti = await Utente.find()
                                    .select('nickname punti')
-                                   .sort({punti: 'desc'})
+                                   .sort({puntiTot: 'desc'})
                                    .lean();
 
         // Prendo solo i 50 utenti con punteggio più alto                           
