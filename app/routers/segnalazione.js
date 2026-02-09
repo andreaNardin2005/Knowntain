@@ -107,7 +107,7 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
             utente.punti += segnalazione.punti;
 
             // Aggiorno tutte le iniziative incrementando il campo punti di 100
-            await Iniziativa.updateMany({}, { $inc: { punti: 100 } });
+            //await Iniziativa.updateMany({}, { $inc: { puntiAttuali: 100 } });
         }
 
         // Salvo le modifiche sull'utente e sulla segnalazione su MongoDB
