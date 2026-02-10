@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals'
 import request from 'supertest'
 
-
 // ==========================
 // MOCK MODELLI MONGOOSE
 // ==========================
@@ -19,7 +18,7 @@ jest.unstable_mockModule('../app/models/dipendente.js', () => ({
 }))
 
 // ==========================
-// IMPORT DOPO I MOCK (OBBLIGATORIO)
+// IMPORT DOPO I MOCK
 // ==========================
 const app = (await import('../app/app.js')).default
 const Utente = (await import('../app/models/utente.js')).default
@@ -39,7 +38,10 @@ describe('POST /auth/login', () => {
       _id: '123',
       email: 'test@test.it',
       password: 'password',
-      ruolo: 'utente'
+      ruolo: 'utente',
+      nickname: 'tester',
+      punti: 10,
+      puntiTot: 100
     })
 
     const res = await request(app)
@@ -48,11 +50,16 @@ describe('POST /auth/login', () => {
         email: 'test@test.it',
         password: 'password',
         ruolo: 'utente'
-    })
-    
+      })
+
     expect(res.status).toBe(200)
     expect(res.body.success).toBe(true)
     expect(res.body.role).toBe('utente')
+    expect(res.body.profile).toEqual({
+      nickname: 'tester',
+      punti: 10,
+      puntiTot: 100
+    })
   })
 
   it('fallisce se utente non esiste', async () => {
@@ -64,7 +71,7 @@ describe('POST /auth/login', () => {
         email: 'no@test.it',
         password: 'password',
         ruolo: 'utente'
-    })
+      })
 
     expect(res.status).toBe(401)
     expect(res.body.success).toBe(false)
@@ -75,7 +82,10 @@ describe('POST /auth/login', () => {
       _id: '123',
       email: 'test@test.it',
       password: 'giusta',
-      ruolo: 'utente'
+      ruolo: 'utente',
+      nickname: 'tester',
+      punti: 10,
+      puntiTot: 100
     })
 
     const res = await request(app)
@@ -84,7 +94,7 @@ describe('POST /auth/login', () => {
         email: 'test@test.it',
         password: 'sbagliata',
         ruolo: 'utente'
-    })
+      })
 
     expect(res.status).toBe(401)
     expect(res.body.success).toBe(false)
@@ -95,7 +105,8 @@ describe('POST /auth/login', () => {
       _id: '456',
       email: 'dip@test.it',
       password: 'password',
-      ruolo: 'dipendente'
+      ruolo: 'dipendente',
+      isAdmin: true
     })
 
     const res = await request(app)
@@ -104,16 +115,22 @@ describe('POST /auth/login', () => {
         email: 'dip@test.it',
         password: 'password',
         ruolo: 'dipendente'
-    })
+      })
 
     expect(res.status).toBe(200)
+    expect(res.body.success).toBe(true)
     expect(res.body.role).toBe('dipendente')
+    expect(res.body.profile).toEqual({
+      isAdmin: true
+    })
   })
 
   it('fallisce se body incompleto', async () => {
     const res = await request(app)
       .post('/auth/login')
-      .send({ email: 'test@test.it' })
+      .send({
+        email: 'test@test.it'
+      })
 
     expect(res.status).toBe(400)
   })
@@ -137,7 +154,9 @@ describe('POST /auth/register', () => {
       _id: '123',
       email: 'test@test.it',
       ruolo: 'utente',
-      nickname: 'tester'
+      nickname: 'tester',
+      punti: 0,
+      puntiTot: 0
     })
 
     const res = await request(app)
@@ -148,12 +167,16 @@ describe('POST /auth/register', () => {
         nome: 'Mario',
         cognome: 'Rossi',
         nickname: 'tester'
-    })
+      })
 
     expect(res.status).toBe(201)
     expect(res.body.success).toBe(true)
-
     expect(res.body.email).toBe('test@test.it')
+    expect(res.body.profile).toEqual({
+      nickname: 'tester',
+      punti: 0,
+      puntiTot: 0
+    })
   })
 
   it('fallisce se email non valida', async () => {
@@ -165,7 +188,7 @@ describe('POST /auth/register', () => {
         nome: 'Mario',
         cognome: 'Rossi',
         nickname: 'tester'
-    })
+      })
 
     expect(res.status).toBe(400)
     expect(res.body.success).toBe(false)
@@ -181,7 +204,7 @@ describe('POST /auth/register', () => {
         nome: 'Mario',
         cognome: 'Rossi',
         nickname: 'tester'
-    })
+      })
 
     expect(res.status).toBe(400)
     expect(res.body.success).toBe(false)
@@ -204,7 +227,7 @@ describe('POST /auth/register', () => {
         nome: 'Mario',
         cognome: 'Rossi',
         nickname: 'tester'
-    })
+      })
 
     expect(res.status).toBe(409)
     expect(res.body.success).toBe(false)
@@ -217,7 +240,7 @@ describe('POST /auth/register', () => {
       .send({
         email: 'test@test.it',
         password: 'StrongPass1!'
-    })
+      })
 
     expect(res.status).toBe(400)
   })

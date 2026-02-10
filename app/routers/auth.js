@@ -146,7 +146,7 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
             nickname: user.nickname,
             punti: user.punti,
             puntiTot: user.puntiTot
-        }
+        },
 		id: user._id,
 		self: `/${roleToRoute[user.ruolo]}/${user._id}`
 	});
