@@ -4,8 +4,26 @@ import requireBody from '../middlewares/requireBody.js';
 
 const router = express.Router();
 
-// Creazione di un nuovo account dipendente
 
+router.get('/me', async (req, res) => {
+  try {
+    // tokenChecker aggiunge req.loggedUser
+    // cerco il dipendente per id escludendo password e versione
+    const user = await Utente.findById(req.loggedUser.id).select('-password -__v');
+
+    // Se non trovo l'utente ritorno un errore
+    if (!user) return res.status(404).json({ 
+        success: false,
+        message: 'Dipendente non trovato' 
+    });
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Creazione di un nuovo account dipendente
 router.post('/create', requireBody(['nome','cognome','email','password','isAdmin']), async (req,res) => {
 
     // Controllo che il dipendente sia un admin
@@ -16,7 +34,6 @@ router.post('/create', requireBody(['nome','cognome','email','password','isAdmin
         });
     }
     
-
     // Spacchetto i campi della richiesta
     const { email, password, nome, cognome, isAdmin } = req.body;
 

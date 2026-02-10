@@ -11,7 +11,10 @@ router.get('/me', async (req, res) => {
     const user = await Utente.findById(req.loggedUser.id).select('-password -__v');
 
     // Se non trovo l'utente ritorno un errore
-    if (!user) return res.status(404).json({ message: 'Utente non trovato' });
+    if (!user) return res.status(404).json({
+      success: false,
+      message: 'Utente non trovato' 
+    });
 
     // Cerco le segnalazioni associate all'utente che ho trovato
     const segnalazioni = await Segnalazione.find({utente: user._id}).exec();
