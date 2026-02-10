@@ -82,7 +82,12 @@ router.post('/create', requireBody(['nome','cognome','email','password','isAdmin
 
     return res.status(201).json({
         success: true,
-        user
+        user: {
+            email: user.email,
+            nome: user.nome,
+            cognome: user.cognome,
+            isAdmin: user.isAdmin
+        }
     });
 });
 

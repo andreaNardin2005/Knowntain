@@ -57,12 +57,26 @@ router.post('/login', requireBody(['email','password','ruolo']), async (req,res)
     // Se l'utente ha passato i controlli sopra sopra viene creato un token
     const token = createToken(user);
 
+    let userProfile = {};
+    if (user.ruolo === 'utente') {
+        userProfile = {
+            nickname: user.nickname,
+            punti: user.punti,
+            puntiTot: user.puntiTot
+        }
+    } else {
+        userProfile = {
+            isAdmin: user.isAdmin
+        }
+    }
+
 	res.json({
 		success: true,
 		message: 'Enjoy your token!',
 		token: token,
 		email: user.email,
         role: user.ruolo,
+        profile: userProfile,
 		id: user._id,
 		self: `/${roleToRoute[user.ruolo]}/${user._id}`
 	});
@@ -128,6 +142,11 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
 		token: token,
 		email: user.email,
         role: user.ruolo,
+        profile: {
+            nickname: user.nickname,
+            punti: user.punti,
+            puntiTot: user.puntiTot
+        }
 		id: user._id,
 		self: `/${roleToRoute[user.ruolo]}/${user._id}`
 	});
