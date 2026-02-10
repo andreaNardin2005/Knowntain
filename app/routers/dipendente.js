@@ -1,6 +1,7 @@
 import express from 'express';
 import Dipendente from '../models/dipendente.js';
 import requireBody from '../middlewares/requireBody.js';
+import { isStrongPassword, isValidEmail } from '../utils/validators.js';
 
 const router = express.Router();
 
@@ -31,6 +32,7 @@ router.post('/create', requireBody(['nome','cognome','email','password','isAdmin
 
     // Controllo che il dipendente sia un admin
     const dipendente = await Dipendente.findById(req.loggedUser.id);
+    
     if (!dipendente.isAdmin) {
         return res.status(403).json({
             success: false,
