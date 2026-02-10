@@ -41,17 +41,17 @@ describe('GET /classifica', () => {
     console.log(res.body);
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
+    expect(Array.isArray(res.body.utentiTop)).toBe(true);
 
     // Controllo nickname e punti
-    expect(res.body[0].nickname).toBe('Alice');
-    expect(res.body[0].punti).toBe(120);
+    expect(res.body.utentiTop[0].nickname).toBe('Alice');
+    expect(res.body.utentiTop[0].punti).toBe(120);
 
     // Controllo posizione crescente
-    expect(res.body[0].posizione).toBe(1);
-    expect(res.body[1].posizione).toBe(2);
+    expect(res.body.utentiTop[0].posizione).toBe(1);
+    expect(res.body.utentiTop[1].posizione).toBe(2);
 
     // Limite top 50
-    expect(res.body.length).toBeLessThanOrEqual(50);
+    expect(res.body.utentiTop.length).toBeLessThanOrEqual(50);
   });
 });

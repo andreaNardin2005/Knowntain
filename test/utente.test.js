@@ -50,9 +50,9 @@ describe('GET /utenti/me', () => {
     const res = await request(app).get('/utenti/me');
 
     expect(res.status).toBe(200);
-    expect(res.body.email).toBe('test@test.it');
-    expect(res.body.password).toBeUndefined();
-    expect(res.body.segnalazioni).toHaveLength(1);
-    expect(res.body.segnalazioni[0].titolo).toBe('Segn 1');
+    expect(res.body.merge.email).toBe('test@test.it');
+    expect(res.body.merge.password).toBeUndefined();
+    expect(res.body.merge.segnalazioni).toHaveLength(1);
+    expect(res.body.merge.segnalazioni[0].titolo).toBe('Segn 1');
   });
 });

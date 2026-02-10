@@ -74,9 +74,9 @@ describe('API Segnalazioni', () => {
     console.log("GET res: ", res.body);
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
-    expect(res.body.length).toBe(2);
-    expect(res.body[0].stato).toBe('Validata');
+    expect(Array.isArray(res.body.segnalazioni)).toBe(true);
+    expect(res.body.segnalazioni.length).toBe(2);
+    expect(res.body.segnalazioni[0].stato).toBe('Validata');
   });
 
   it('POST /segnalazioni crea una nuova segnalazione', async () => {

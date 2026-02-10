@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
                 .exec();
         }
 
-        return res.json({
+        return res.status(200).json({
             success: true,
             segnalazioni
         });
