@@ -30,7 +30,7 @@ router.get('/me', async (req, res) => {
 router.post('/create', requireBody(['nome','cognome','email','password','isAdmin']), async (req,res) => {
 
     // Controllo che il dipendente sia un admin
-    if (!req.loggedUser.isAdmin) {
+    if (!req.loggedUser.profile.isAdmin) {
         res.status(403).json({
             success: false,
             message: 'Dipendente non autorizzato a creare nuovi dipendenti'
