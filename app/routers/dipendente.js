@@ -9,7 +9,7 @@ router.get('/me', async (req, res) => {
   try {
     // tokenChecker aggiunge req.loggedUser
     // cerco il dipendente per id escludendo password e versione
-    const user = await Utente.findById(req.loggedUser.id).select('-password -__v');
+    const user = await Dipendente.findById(req.loggedUser.id).select('-password -__v');
 
     // Se non trovo l'utente ritorno un errore
     if (!user) return res.status(404).json({ 
@@ -19,7 +19,10 @@ router.get('/me', async (req, res) => {
 
     res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({
+        success: false,
+        message: err.message 
+    });
   }
 });
 
