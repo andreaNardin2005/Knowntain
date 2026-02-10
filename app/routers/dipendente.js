@@ -17,9 +17,9 @@ router.get('/me', async (req, res) => {
         message: 'Dipendente non trovato' 
     });
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
         success: false,
         message: err.message 
     });
@@ -30,8 +30,9 @@ router.get('/me', async (req, res) => {
 router.post('/create', requireBody(['nome','cognome','email','password','isAdmin']), async (req,res) => {
 
     // Controllo che il dipendente sia un admin
-    if (!req.loggedUser.profile.isAdmin) {
-        res.status(403).json({
+    const dipendente = await Dipendente.findById(req.loggedUser.id);
+    if (!dipendente.isAdmin) {
+        return res.status(403).json({
             success: false,
             message: 'Dipendente non autorizzato a creare nuovi dipendenti'
         });
@@ -79,7 +80,7 @@ router.post('/create', requireBody(['nome','cognome','email','password','isAdmin
     });
 
 
-    res.status(201).json({
+    return res.status(201).json({
         success: true,
         user
     });
