@@ -32,8 +32,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// CORS 
-//app.use(cors());
+// Chiamate CORS
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -44,18 +43,21 @@ app.use(cors({
   allowedHeaders: ['Content-Type','access-token']
 }));
 
-// Middleware che logga in console le richieste effettuate
+// Middleware Logger: logga in console le richieste ricevute
 app.use((req,res,next) => {
     console.log(req.method + ' ' + req.url);
     next();
 });
 
-// Swagger
+
+// Serving Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Authentication middleware
 app.use('/auth', auth);
 
+/* Registrazione delle route API protette da autenticazione JWT
+   Tutte le richieste devono passare dal middleware tokenChecker */
 app.use('/utenti', tokenCheker, utente);
 app.use('/dipendenti', tokenCheker, dipendente);
 app.use('/segnalazioni', tokenCheker, segnalazione);
@@ -64,7 +66,8 @@ app.use('/classifica', tokenCheker, classifica);
 app.use('/mappa', tokenCheker, mappa);
 
 
-// Caso di Test per verificare che la App risponda
+/* Endpoint di health check per verificare che l'applicazione sia attiva
+   e risponda correttamente alle richieste */
 app.get('/health', (req,res) => 
     res.status(200).json({ status: 'ok', uptime: process.uptime() })
 );

@@ -5,34 +5,43 @@ import { isStrongPassword, isValidEmail } from '../utils/validators.js';
 
 const router = express.Router();
 
-
+/*----------------------------------------
+ - GET: Get del profilo dipendente
+------------------------------------------*/
 router.get('/me', async (req, res) => {
-  try {
-    // tokenChecker aggiunge req.loggedUser
-    // cerco il dipendente per id escludendo password e versione
-    const user = await Dipendente.findById(req.loggedUser.id).select('-password -__v');
+    try {
+        // tokenChecker aggiunge req.loggedUser
+        // cerco il dipendente per id escludendo password e versione
+        const user = await Dipendente.findById(req.loggedUser.id).select('-password -__v');
 
-    // Se non trovo l'utente ritorno un errore
-    if (!user) return res.status(404).json({ 
-        success: false,
-        message: 'Dipendente non trovato' 
-    });
+        // Se non trovo l'utente ritorno un errore
+        if (!user) return res.status(404).json({ 
+            success: false,
+            message: 'Dipendente non trovato' 
+        });
 
-    return res.status(200).json(user);
-  } catch (err) {
-    return res.status(500).json({
-        success: false,
-        message: err.message 
-    });
-  }
+        // Ritorno l'account dipendente
+        return res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message 
+        });
+    }
 });
 
-// Creazione di un nuovo account dipendente
+/*------------------------------------------------
+ - POST: Creazione di un nuovo account dipendente
+--------------------------------------------------*/
 router.post('/create', requireBody(['nome','cognome','email','password','isAdmin']), async (req,res) => {
 
     // Controllo che il dipendente sia un admin
     const dipendente = await Dipendente.findById(req.loggedUser.id);
     
+    // Se il dipendente non è un Admin, non è autorizzato a creare nuovi account
     if (!dipendente.isAdmin) {
         return res.status(403).json({
             success: false,
@@ -81,7 +90,7 @@ router.post('/create', requireBody(['nome','cognome','email','password','isAdmin
         password: password
     });
 
-
+    // Ritorno il nuovo dipendente creato
     return res.status(201).json({
         success: true,
         user: {

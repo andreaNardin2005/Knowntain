@@ -1,14 +1,16 @@
 import jwt from 'jsonwebtoken';
 
 const tokenCheker = (req,res,next) => {
-	// Salta l'auth per options
+
+	// Salta il processo di auth per le richieste OPTIONS
 	if (req.method === 'OPTIONS') {
     	return next();
   	}
+
     // Controlla se il token è inserito nell'header
 	const token = req.headers['access-token'];
 
-	// se il token non c'è viene mandato un errore
+	// Se il token non c'è viene mandato un errore
 	if (!token) {
 		return res.status(401).send({ 
 			success: false,
@@ -31,5 +33,6 @@ const tokenCheker = (req,res,next) => {
 		}
 	});
 }
+
 
 export default tokenCheker;

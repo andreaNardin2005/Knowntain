@@ -2,23 +2,27 @@ import express from 'express';
 import Segnalazione from '../models/segnalazione.js';
 import Dipendente from '../models/dipendente.js';
 import Utente from '../models/utente.js';
-import Iniziativa from '../models/iniziativa.js';
 import requireBody from '../middlewares/requireBody.js';
 
 const router = express.Router();
 
-
+/*---------------------------------
+ - GET: get delle segnalazioni
+---------------------------------*/
 router.get('/', async (req, res) => {
     try {
         let segnalazioni = [];
+
         // controllo quale è il tipo di utente
         if (req.loggedUser.ruolo === 'dipendente') {
+
             // Se è un dipendente ritorno tutte le segnalazioni
             segnalazioni = await Segnalazione
                 .find({})
                 .sort({ stato: 1, data: 1 })
                 .exec();
         } else {
+
             // Se è un utente ritorno solo quelle validate
             segnalazioni = await Segnalazione
                 .find({ stato: 'Validata' })
@@ -26,19 +30,24 @@ router.get('/', async (req, res) => {
                 .exec();
         }
 
-        res.json(segnalazioni);
+        return res.json({
+            success: true,
+            segnalazioni
+        });
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: err.message 
         });
     }
 });
 
-
+/*-----------------------------------
+ - POST: Creazione nuova segnalazione
+-------------------------------------*/
 router.post('/', requireBody(['titolo','descrizione','posizione','tipo']), async (req,res) => {
     try {
-        // provo a salvare la nuova segnalazione sul DB con i dati forniti
+        // Provo a salvare la nuova segnalazione sul DB con i dati forniti
         const segnalazione = await Segnalazione.create({
             titolo: req.body.titolo,
             descrizione: req.body.descrizione,
@@ -56,9 +65,15 @@ router.post('/', requireBody(['titolo','descrizione','posizione','tipo']), async
     }
 });
 
-router.patch('/:id', requireBody(['stato']), async (req,res) => {
+/*----------------------------------------
+ - PATCH: Aggiornamento stato segnalazione
+------------------------------------------*/
+router.patch('/:id', requireBody(['stato','punti']), async (req,res) => {
     
     try {
+        // Spacchetto i dati del body
+        const { stato, punti } = req.body;
+
         // Cerco lo user loggato nella collection Dipendente
         const dipendente = await Dipendente.findById(req.loggedUser.id).select('-password -__v');
 
@@ -82,7 +97,7 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
         }
 
         // Cambio lo stato in 'Validata' o 'Rifiutata'
-        segnalazione.stato = req.body.stato;
+        segnalazione.stato = stato;
 
         // Salvo il dipendente nel campo dedicato nella segnalazione
         segnalazione.dipendente = dipendente._id;
@@ -99,23 +114,25 @@ router.patch('/:id', requireBody(['stato']), async (req,res) => {
         }
 
         // Se viene validata
-        if (segnalazione.stato === 'Validata') {
+        if (stato === 'Validata') {
             // Assegno 100 punti alla segnalazione
-            segnalazione.punti = 100;
+            segnalazione.punti = punti;
             
-            // Incremento i punti utente nel campo dedicato nel DB
-            utente.punti += segnalazione.punti;
-
-            // Aggiorno tutte le iniziative incrementando il campo punti di 100
-            //await Iniziativa.updateMany({}, { $inc: { puntiAttuali: 100 } });
+            // Incremento i punti spendibili e i punti totali dell'utente 
+            utente.punti += punti;
+            utente.puntiTot += punti;
         }
 
         // Salvo le modifiche sull'utente e sulla segnalazione su MongoDB
         await segnalazione.save();
         await utente.save();
-        res.json(segnalazione);
+
+        return res.status(200).json({
+            success: true,
+            segnalazione
+        });
     } catch (err) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: err.message
         });

@@ -6,24 +6,34 @@ import requireBody from '../middlewares/requireBody.js';
 
 const router = express.Router();
 
-// Estrazione di tutte le iniziative in corso
+/*------------------------------------------------
+ - GET: Estrazione di tutte le iniziative in corso
+---------------------------------------------------*/
 router.get('/', async (req,res) => {
     try {
         // Estraggo dal DB tutte le iniziative inserite
         const iniziative = await Iniziativa.find();
         
-        res.json(iniziative);
+        // Ritorno le iniziative trovate
+        return res.status(200).json({
+            success: true,
+            iniziative
+        });
     } catch (err) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: err.message
         });
     }
 });
 
-// Inserimento di una nuova iniziativa
+/*----------------------------------------
+ - POST: Inserimento nuova iniziativa
+------------------------------------------*/
 router.post('/', requireBody(['titolo','descrizione','puntiObiettivo']), async (req,res) => {
     try {
+        const { titolo, descrizione, puntiObiettivo } = req.body;
+        
         // Cerco lo user loggato nella collection Dipendente
         const dipendente = await Dipendente.findById(req.loggedUser.id).select('-password -__v');
         
@@ -35,14 +45,19 @@ router.post('/', requireBody(['titolo','descrizione','puntiObiettivo']), async (
             });
         }
 
+        // Creo la nuova iniziativa con i dati forniti
         const iniziativa = await Iniziativa.create({
-            titolo: req.body.titolo,
-            descrizione: req.body.descrizione,
-            puntiObiettivo: req.body.puntiObiettivo,
+            titolo: titolo,
+            descrizione: descrizione,
+            puntiObiettivo: puntiObiettivo,
             dipendente: dipendente._id
         });
 
-        res.json(iniziativa);
+        // Ritorno l'iniziativa creata
+        return res.status(201).json({
+            success: true,
+            iniziativa
+        });
     } catch (err) {
         res.status(500).send({
             success: false,
@@ -51,6 +66,9 @@ router.post('/', requireBody(['titolo','descrizione','puntiObiettivo']), async (
     }
 });
 
+/*--------------------------------------------
+ - PATCH: Assegnazione punti ad una iniziativa
+---------------------------------------------*/
 router.patch('/:id', requireBody(['puntiAssegnati']), async (req,res) => {
     try {
         // Trasformo i punti arrivati come stringa in numero
@@ -110,12 +128,13 @@ router.patch('/:id', requireBody(['puntiAssegnati']), async (req,res) => {
         await iniziativa.save();
         await utente.save();
 
-        res.json({
+        // Ritorno l'iniziativa modificata
+        return res.status(200).json({
             success: true,
             iniziativa
         });
     } catch (err) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             errorr: err,
             message: 'Errore durante l\'assegnazione di punti all\'inizitiva'

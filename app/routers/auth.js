@@ -10,6 +10,7 @@ const roleToRoute = {
     dipendente: 'dipendenti'
 };
 
+// Funzione per la creazione di un token JWT dato un utente
 function createToken(user) {
     const payload = {
         id: user._id,
@@ -27,7 +28,9 @@ function createToken(user) {
 }
 
 
-// ***************** LOGIN UTENTE-DIPENDENTE ***************************
+/*----------------------------------
+ - POST: Login utente | dipendente
+------------------------------------*/
 router.post('/login', requireBody(['email','password','ruolo']), async (req,res) => {
 
     const { email, password, ruolo } = req.body;
@@ -48,16 +51,22 @@ router.post('/login', requireBody(['email','password','ruolo']), async (req,res)
         });
     }
 
-    // Controlla se la password matcha (aggiungere bcrypt)
+    // Controlla se la password matcha
     if (user.password != password) {
-        res.status(401).json({success: false, message: 'Autenticazione fallita' });
-        return;
+        return res.status(401).json({
+            success: false, 
+            message: 'Autenticazione fallita'
+        });
     }
+
+    // (!) TODO: Aggiungere bicrypt per hashing password
 
     // Se l'utente ha passato i controlli sopra sopra viene creato un token
     const token = createToken(user);
 
+    // Creazione dell'attributo profilo contenente caratteristiche specifiche per tipo di utente
     let userProfile = {};
+
     if (user.ruolo === 'utente') {
         userProfile = {
             nickname: user.nickname,
@@ -70,7 +79,8 @@ router.post('/login', requireBody(['email','password','ruolo']), async (req,res)
         }
     }
 
-	res.json({
+    // Login completato
+	return res.status(200).json({
 		success: true,
 		message: 'Enjoy your token!',
 		token: token,
@@ -82,10 +92,12 @@ router.post('/login', requireBody(['email','password','ruolo']), async (req,res)
 	});
 });
 
-// ***************** REGISTRAZIONE UTENTI ***************************
+/*-------------------------------------
+ - POST: Registrazione nuovo utente 
+--------------------------------------*/
 router.post('/register', requireBody(['email','password','nome','cognome','nickname']), async (req,res) => {
 
-    // importa model utente, dal momento che la registrazione è solo per gli utenti
+    // Importa model utente, dal momento che la registrazione è solo per gli utenti
     const Utente = (await import('../models/utente.js')).default;
 
     // Spacchetto i campi della richiesta
@@ -135,8 +147,8 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
     // Crea il token per il nuovo utente
     const token = createToken(user);
 
-    // Completata la registrazione l'utente viene loggato nella sua dashboard
-    res.status(201).json({
+    // Completata registrazione e login diretto
+    return res.status(201).json({
 		success: true,
 		message: 'Enjoy your token!',
 		token: token,

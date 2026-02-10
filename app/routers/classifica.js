@@ -3,6 +3,9 @@ import Utente from '../models/utente.js';
 
 const router = express.Router();
 
+/*----------------------------------------
+ - GET: get della classifica utenti
+------------------------------------------*/
 router.get('/', async (req,res) => {
     try {
         /*
@@ -25,14 +28,18 @@ router.get('/', async (req,res) => {
             utente.posizione = i++;
         });
 
-        // ritorno l'array degli utenti top
-        res.json(utentiTop);
+        // Ritorno l'array degli utenti più virtuosi
+        return res.status(200).json({
+            success: true,
+            utentiTop
+        });
     } catch (err) {
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
             message: err.message
         });
     }
 });
+
 
 export default router;
