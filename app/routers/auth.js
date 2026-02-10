@@ -110,7 +110,7 @@ router.post('/register', requireBody(['email','password','nome','cognome','nickn
     }
 
     // Crea un nuovo documento nella collection Utente e lo salva sul DB
-    let user = await Utente.create({
+    const user = await Utente.create({
         nome: nome,
         cognome: cognome,
         nickname: nickname,
