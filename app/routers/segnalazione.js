@@ -115,7 +115,14 @@ router.patch('/:id', requireBody(['stato','punti']), async (req,res) => {
 
         // Se viene validata
         if (stato === 'Validata') {
-            // Assegno 100 punti alla segnalazione
+            if (punti <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'I punti assegnati alla segnalazione devono essere un numero positivo'
+                });
+            }
+            
+            // Assegno punti alla segnalazione
             segnalazione.punti = punti;
             
             // Incremento i punti spendibili e i punti totali dell'utente 
