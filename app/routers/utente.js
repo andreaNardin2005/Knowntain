@@ -26,13 +26,13 @@ router.get('/me', async (req, res) => {
 
 		/* Compatto tutte le informazioni relative 
 		all'utente e alle segnalazioni associate in un unico oggetto */
-		const merge = user.toObject();
+		const profilo = user.toObject();
 		const segnObj = segnalazioni.map(s => s.toObject());
-		merge.segnalazioni = segnObj;
+		profilo.segnalazioni = segnObj;
 
 		return res.status(200).json({
 			success: true,
-			merge
+			profilo
 		});
   	} catch (err) {
 		return res.status(500).json({
