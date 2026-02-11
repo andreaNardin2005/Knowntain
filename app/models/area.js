@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import geoJson from './geoJson.js';
 
 const AreaSchema = new Schema({
     titolo: { type: String, require: true },
