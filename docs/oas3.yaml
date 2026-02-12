@@ -6,129 +6,521 @@ info:
   license:
     name: MIT
 servers:
-  - url: http://localhost:8080/
-    description: Localhost
-  - url: https://knowntain-x4b7.onrender.com/
-    description: render.com
+- url: https://knowntain-x4b7.onrender.com
+  description: Deploy on render.com
+- url: http://localhost:8080
+  description: Localhost
+# --------------------------------------------------------------------------
+#  ******************************** AUTH **********************************
+# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# POST: Login ********************************************************************
+# --------------------------------------------------------------------------
 paths:
-# Register **************************************************************
-    /auth/register:
-      post:
-        summary: Registra un utente
-        description: Permette ad un utente di creare un nuovo account
-        requestBody:
-          required: true
+  /auth/login:
+    post:
+      summary: Login utente o dipendente
+      description: Effettua il login restituendo un token JWT e le informazioni del profilo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              loginUtente:
+                summary: Login utente
+                value:
+                  email: andrea.nardin@example.com
+                  password: P4ssword!
+                  ruolo: utente
+
+              loginDipendente:
+                summary: Login dipendente
+                value:
+                  email: federico.neri@example.com
+                  password: AdminPass321!
+                  ruolo: dipendente
+      responses:
+        '200':
+          description: Login riuscito
           content:
             application/json:
-              schema : { $ref: '#/components/schemas/RegisterRequest' }
-        responses: 
-          '201':
-            description: Registrazione valida
-            content:
-              application/json:
-                schema: { $ref: '#/components/schemas/AuthResponse' }
-          '400':
-            description: Richiesta non valida
-            content:
-              application/json:
-                schema: 
-                  type: object
-                  properties:
-                    message: 
-                      type: string
-                      example: Dati di input non validi
-          '409':
-            description: Conflitto
-            content:
-              application/json:
-                schema: 
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      example: Email o Nickname già in uso
-# Login **************************************************************
-    /auth/login:
-      post:
-        summary: Login utente e dipendente
-        description: Permette ad un utente o ad un dipendente di accedere alle proprie funzionalità
-        requestBody:
-          required: true
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Autenticazione fallita
           content:
             application/json:
-              schema : {$ref: '#/components/schemas/LoginRequest'}
-        responses: 
-          '200':
-            description: Login valido
-            content:
-              application/json:
-                schema: {$ref: '#/components/schemas/AuthResponse'}       
-          '401':
-            description: Login non riuscito
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      example: Email o password non valide
-# Segnalazioni Utente ******************************************************
-    /segnalazioni:
-      get:
-        summary: Ritorna le segnalazioni validate
-        description: Ritorna un array delle segnalazioni validate
-        responses:
-          '200':
-            description: Segnalazione registrata correttamente
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items: {$ref: '#/components/schemas/Segnalazione'}
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+# --------------------------------------------------------------------------
+# POST: Register *****************************************************************
+# --------------------------------------------------------------------------
+  /auth/register:
+    post:
+      summary: Registrazione nuovo utente
+      description: Crea un nuovo account utente e restituisce token e profilo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Registrazione completata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Richiesta non valida (email o password non corrette)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Conflitto, email o nickname già in uso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 
 
+# --------------------------------------------------------------------------
+#  ******************************** MAPPA **********************************
+# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# GET: Ottieni Aree e Segnalazioni *****************************************
+# --------------------------------------------------------------------------
+  /mappa:
+    get:
+      summary: Recupera tutte le aree e le segnalazioni validate
+      description: Restituisce le segnalazioni con stato "Validata" e tutte le aree presenti nel database.
+      responses:
+        '200':
+          description: Richiesta completata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  segnalazioni:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Segnalazione'
+                  aree:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Area'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 
 
+# --------------------------------------------------------------------------
+#  ***************************** SEGNALAZIONI ******************************
+# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
+# GET: Recupera Segnalazioni ***********************************************
+# --------------------------------------------------------------------------
+  /segnalazioni:
+    get:
+      summary: Recupera le segnalazioni
+      description: Restituisce tutte le segnalazioni per i dipendenti e solo quelle validate per gli utenti.
+      responses:
+        '200':
+          description: Segnalazioni recuperate con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  segnalazioni:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Segnalazione'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+# --------------------------------------------------------------------------
+# POST: Creazione nuova Segnalazione ****************************************
+# --------------------------------------------------------------------------
+    post:
+      summary: Crea una nuova segnalazione
+      description: Permette all’utente di creare una nuova segnalazione nel sistema.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NuovaSegnalazioneRequest'
+      responses:
+        '201':
+          description: Segnalazione creata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segnalazione'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+# --------------------------------------------------------------------------
+# PATCH: Aggiornamento stato Segnalazione ***********************************
+# --------------------------------------------------------------------------
+  /segnalazioni/{id}:
+    patch:
+      summary: Aggiorna lo stato di una segnalazione
+      description: Consente al dipendente di validare o rifiutare una segnalazione e assegnare punti.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID della segnalazione da aggiornare
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AggiornaStatoRequest'
+      responses:
+        '200':
+          description: Segnalazione aggiornata con successo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segnalazione'
+        '400':
+          description: Errore nei dati forniti (es. punti negativi)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Segnalazione, utente o dipendente non trovati
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 
 
+# -----------------------------------------------------------------------
+# ************************** INIZIATIVE *********************************
+# -----------------------------------------------------------------------
+# -----------------------------------------------------------------------
+# GET: Estrazione di tutte le iniziative in corso ***********************
+# -----------------------------------------------------------------------
+  /iniziative:
+    get:
+      summary: Recupera tutte le iniziative
+      description: Restituisce tutte le iniziative presenti nel sistema.
+      responses:
+        '200':
+          description: Iniziative recuperate con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  iniziative:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Iniziativa'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+# ------------------------------------------------------------------------
+# POST: Inserimento nuova iniziativa *************************************
+# ------------------------------------------------------------------------
+    post:
+      summary: Crea una nuova iniziativa
+      description: Permette ai dipendenti di creare una nuova iniziativa.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NuovaIniziativaRequest'
+      responses:
+        '201':
+          description: Iniziativa creata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  iniziativa:
+                    $ref: '#/components/schemas/Iniziativa'
+        '404':
+          description: Dipendente non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+# ------------------------------------------------------------------------
+# PATCH: Assegnazione punti ad una iniziativa ****************************
+# ------------------------------------------------------------------------
+  /iniziative/{id}:
+    patch:
+      summary: Assegna punti ad un'iniziativa
+      description: Permette agli utenti di assegnare punti ad un'iniziativa in corso, decrementando i propri punti disponibili.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID dell'iniziativa a cui assegnare punti
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssegnaPuntiRequest'
+      responses:
+        '200':
+          description: Punti assegnati correttamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  iniziativa:
+                    $ref: '#/components/schemas/Iniziativa'
+        '400':
+          description: Errore nei dati forniti (punti non validi o insufficienti)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Utente o iniziativa non trovati
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 
-# Components ******************************************************
+
+# -----------------------------------------------------------------------
+# ************************** CLASSIFICA *********************************
+# -----------------------------------------------------------------------
+# ------------------------------------------------------------------------
+# GET: Estrazione dei top 50 utenti **************************************
+# ------------------------------------------------------------------------
+  /classifica:
+    get:
+      summary: Recupera la classifica utenti
+      description: Restituisce i primi 50 utenti ordinati per puntiTot decrescente, con la posizione relativa e il nickname.
+      responses:
+        '200':
+          description: Classifica recuperata con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  utentiTop:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UtenteClassifica'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+
+# -----------------------------------------------------------------------
+# ****************************** UTENTE *********************************
+# -----------------------------------------------------------------------
+# ------------------------------------------------------------------------
+# GET: Recupero profilo utente autenticato *******************************
+# ------------------------------------------------------------------------
+  /utenti/me:
+    get:
+      summary: Recupera il profilo dell'utente autenticato
+      description: >
+        Restituisce le informazioni dell'utente loggato (escludendo password e campi tecnici)
+        insieme a tutte le segnalazioni da lui create.
+      responses:
+        '200':
+          description: Profilo recuperato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  profilo:
+                    $ref: '#/components/schemas/ProfiloUtente'
+        '404':
+          description: Utente non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+
+# -----------------------------------------------------------------------
+# ****************************** DIPENDENTE *****************************
+# -----------------------------------------------------------------------
+# ------------------------------------------------------------------------
+# GET: Recupero profilo dipendente ***************************************
+# ------------------------------------------------------------------------
+  /dipendenti/me:
+    get:
+      summary: Recupera il profilo del dipendente autenticato
+      description: Restituisce le informazioni del dipendente loggato escludendo password e campi tecnici.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profilo recuperato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/Dipendente'
+        '404':
+          description: Dipendente non trovato
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+# ------------------------------------------------------------------------
+# POST: Creazione nuovo account dipendente (solo Admin) *******************
+# ------------------------------------------------------------------------
+  /dipendenti/create:
+    post:
+      summary: Crea un nuovo account dipendente
+      description: >
+        Permette ad un dipendente con ruolo Admin di creare un nuovo account dipendente.
+        Richiede autenticazione JWT.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDipendenteRequest'
+      responses:
+        '201':
+          description: Dipendente creato con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  user:
+                    $ref: '#/components/schemas/DipendentePublic'
+        '400':
+          description: Email non valida o password debole
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Dipendente non autorizzato (non Admin)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Email già utilizzata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+
+# --------------------------------------------------------------------------
+# Components ***************************************************************
+# --------------------------------------------------------------------------
 components:
   schemas:
-# RegisterRequest **********************
-    RegisterRequest:
-      type: object
-      required:
-        - nome
-        - cognome
-        - email
-        - nickname
-        - password
-      properties:
-        nome:
-          type: string
-          example: Mario
-        cognome:
-          type: string
-          example: Rossi
-        email:
-          type: string
-          format: email
-          example: mario.rossi@example.com
-        nickname:
-          type: string
-          example: supermario
-        password:
-          type: string
-          format: password
-          minLength: 8
-          example: P4ssw0rd!
-# LoginRequest **********************
+    # Login Request ********************************************************
     LoginRequest:
       type: object
       required:
@@ -137,51 +529,85 @@ components:
         - ruolo
       properties:
         email:
-            type: string
-            format: email
-            example: mario.rossi@example.com
-        password:
-            type: string
-            format: password
-            minLength: 8
-            example: P4ssw0rd!
-        ruolo: 
           type: string
-          enum: 
-            - utente
-            - dipendente
-          example: dipendente
-# AuthResponse **********************
-    AuthResponse:
+          format: email
+          description: Email dell'utente o del dipendente
+        password:
+          type: string
+          description: Password dell'account
+        ruolo:
+          type: string
+          enum: [utente, dipendente]
+          description: Ruolo dell'account da autenticare
+    # Register Request ********************************************************
+    RegisterRequest:
       type: object
       required:
-        - success
-        - message
-        - token
-        - id
         - email
-        - self
+        - password
+        - nome
+        - cognome
+        - nickname
+      properties:
+        nome:
+          type: string
+          description: Nome dell'utente
+        cognome:
+          type: string
+          description: Cognome dell'utente
+        nickname:
+          type: string
+          description: Nickname scelto dall'utente
+        email:
+          type: string
+          format: email
+          description: Email dell'utente
+        password:
+          type: string
+          description: Password dell'utente
+
+    # Auth Response ********************************************************
+    AuthResponse:
+      type: object
       properties:
         success:
           type: boolean
-          example: true
         message:
           type: string
-          example: Enjoy your token!
         token:
           type: string
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        id:
-          type: string
-          example: "123"
         email:
           type: string
-          example: mario.rossi@example.com
-        self: 
+        role:
           type: string
-          example: /utenti/123
-# GeoJson ************************************
-    GeoJSON:
+        profile:
+          type: object
+          description: Profilo dell'utente o dipendente
+          properties:
+            nickname:
+              type: string
+            punti:
+              type: integer
+            puntiTot:
+              type: integer
+            isAdmin:
+              type: boolean
+        id:
+          type: string
+        self:
+          type: string
+
+    # Error Response ********************************************************
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:   
+          type: string
+    
+    # GeoJson ********************************************************
+    GeoJson:
       type: object
       required:
         - type
@@ -194,24 +620,211 @@ components:
         coordinates:
           type: array
           example: [25.29342133240317, 19.18888491930697]
-# Segnalazione **********************
+    
+    # Area ********************************************************
+    Area:
+      type: object
+      properties:
+        _id:
+          type: string
+        titolo:
+          type: string
+        descrizione:
+          type: string
+        tipo:
+          type: string
+
+    # Segnalazione ********************************************************
     Segnalazione:
       type: object
       properties:
-        id:
+        _id:
           type: string
-          example: "123"
         titolo:
           type: string
-          example: "Pericolo Frana"
         descrizione:
           type: string
-          example: Frana in zona trafficata
+        tipo:
+          type: string
+        stato:
+          type: string
         data:
           type: string
           format: date-time
-          example: "2025-11-30T15:00:00Z"
-        utente_id:
+        punti:
+          type: integer
+        utente:
           type: string
-          example: "456"
-        posizione: {$ref: '#/components/schemas/GeoJSON'}
+        dipendente:
+          type: string
+        posizione:
+          $ref: '#/components/schemas/GeoJson'
+          description: GeoJson della posizione
+
+    # Nuova Segnalazione Request ********************************************************
+    NuovaSegnalazioneRequest:
+      type: object
+      required:
+        - titolo
+        - descrizione
+        - posizione
+        - tipo
+      properties:
+        titolo:
+          type: string
+        descrizione:
+          type: string
+        posizione:
+          $ref: '#/components/schemas/GeoJson'
+        tipo:
+          type: string
+
+    # Aggiorna Stato Request ********************************************************
+    AggiornaStatoRequest:
+      type: object
+      required:
+        - stato
+        - punti
+      properties:
+        stato:
+          type: string
+          description: Nuovo stato della segnalazione ("Validata" o "Rifiutata")
+        punti:
+          type: integer
+          description: Punti da assegnare se la segnalazione viene validata
+
+    # Rappresenta un'iniziativa ***********************************************
+    Iniziativa:
+      type: object
+      properties:
+        _id:
+          type: string
+        titolo:
+          type: string
+        descrizione:
+          type: string
+        puntiAttuali:
+          type: integer
+          description: Punti già assegnati all'iniziativa
+        puntiObiettivo:
+          type: integer
+          description: Numero di punti necessario per completare l'iniziativa
+        dipendente:
+          type: string
+          description: ID del dipendente che ha creato l'iniziativa
+
+    # Richiesta creazione nuova iniziativa ***************************************
+    NuovaIniziativaRequest:
+      type: object
+      required:
+        - titolo
+        - descrizione
+        - puntiObiettivo
+      properties:
+        titolo:
+          type: string
+        descrizione:
+          type: string
+        puntiObiettivo:
+          type: integer
+
+    # Richiesta assegnazione punti iniziativa **************************************
+    AssegnaPuntiRequest:
+      type: object
+      required:
+        - puntiAssegnati
+      properties:
+        puntiAssegnati:
+          type: integer
+          description: Numero di punti che l'utente vuole assegnare all'iniziativa
+
+    # Utente della classifica **************************************************
+    UtenteClassifica:
+      type: object
+      properties:
+        posizione:
+          type: integer
+          description: Posizione dell'utente nella classifica
+        nickname:
+          type: string
+        puntiTot:
+          type: integer
+          description: Totale punti accumulati dall'utente
+    # Profilo completo dell'utente ********************************************
+    ProfiloUtente:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+        cognome:
+          type: string
+        nickname:
+          type: string
+        email:
+          type: string
+        punti:
+          type: integer
+          description: Punti attualmente spendibili
+        puntiTot:
+          type: integer
+          description: Totale punti accumulati
+        segnalazioni:
+          type: array
+          description: Elenco delle segnalazioni create dall'utente
+          items:
+            $ref: '#/components/schemas/Segnalazione'
+
+    # Dipendente **************************************************
+    Dipendente:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+        cognome:
+          type: string
+        email:
+          type: string
+        isAdmin:
+          type: boolean
+
+    # Dipendente restituito dopo creazione ***********************************
+    DipendentePublic:
+      type: object
+      properties:
+        nome:
+          type: string
+        cognome:
+          type: string
+        email:
+          type: string
+        isAdmin:
+          type: boolean
+
+
+    # Body richiesta creazione dipendente ************************************
+    CreateDipendenteRequest:
+      type: object
+      required:
+        - nome
+        - cognome
+        - email
+        - password
+        - isAdmin
+      properties:
+        nome:
+          type: string
+        cognome:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+          description: >
+            Deve contenere almeno 8 caratteri, una lettera maiuscola,
+            una minuscola, un numero e un carattere speciale.
+        isAdmin:
+          type: boolean
