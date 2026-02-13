@@ -1,6 +1,8 @@
 import express from 'express';
 import Segnalazione from '../models/segnalazione.js';
 import Area from '../models/area.js';
+import requireBody from '../middlewares/requireBody.js';
+
 
 const router = express.Router();
 
