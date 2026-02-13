@@ -31,11 +31,27 @@ router.get('/', async (req,res) => {
 
 
 router.post('/',requireBody(['titolo','features']), async(req,res)=> {
+    //test
+    if (!Array.isArray(req.body.features)) {
+        return res.status(400).json({
+            success: false,
+            message: 'features deve essere un array'
+        });
+    }
+
     try{
         for (const e of req.body.features) {
+            //test
+            if (!e.type) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Ogni feature deve avere un campo type'
+                });
+            }
+
             await Area.create({
                 titolo: req.body.titolo,
-                posizione: e.type
+                posizione: e.geometry
             });
         }
         res.status(201).json({
