@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const geoJsonSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['Point', 'Polygon'],  // tipi supportati
+        enum: ['Point', 'Polygon', 'LineString'],  // tipi supportati
         required: true
     },
     coordinates: {

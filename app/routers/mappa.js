@@ -28,4 +28,25 @@ router.get('/', async (req,res) => {
 });
 
 
+router.post('/',requireBody(['titolo','feature']), async(req,res)=> {
+    try{
+        req.body.array.forEach( e => {
+            const area = await Area.create({
+                titolo: req.body.titolo,
+                posizione: e.type
+            })
+        });
+        res.status(201).json({
+            success: true,
+            message: 'Aree salvate con successo'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Impossibile salvare le aree'
+        });
+    }
+})
+
+
 export default router;
