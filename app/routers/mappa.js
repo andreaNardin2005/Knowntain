@@ -29,8 +29,10 @@ router.get('/', async (req,res) => {
     }
 });
 
-
-router.post('/',requireBody(['titolo','features']), async(req,res)=> {
+/*-----------------------------
+ - POST: Creazione nuove aree
+-------------------------------*/
+router.post('/',requireBody(['titolo','features']), async(req,res) => {
     //test
     if (!Array.isArray(req.body.features)) {
         return res.status(400).json({
@@ -39,7 +41,7 @@ router.post('/',requireBody(['titolo','features']), async(req,res)=> {
         });
     }
 
-    try{
+    try {
         for (const e of req.body.features) {
             //test
             if (!e.type) {
@@ -54,18 +56,18 @@ router.post('/',requireBody(['titolo','features']), async(req,res)=> {
                 posizione: e.geometry
             });
         }
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             message: 'Aree salvate con successo'
         });
 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: 'Impossibile salvare le aree'
         });
     }
-})
+});
 
 
 export default router;

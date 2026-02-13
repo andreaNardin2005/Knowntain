@@ -123,6 +123,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+# --------------------------------------------------------------------------
+# POST: Creazione nuove Aree **********************************************
+# --------------------------------------------------------------------------
+    post:
+      summary: Creazione di nuove aree
+      description: >
+        Permette di salvare più aree a partire da un array di feature GeoJSON.
+        Per ogni feature viene salvata la geometry come posizione.
+
+      tags:
+        - Aree
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAreeRequest'
+
+      responses:
+        '201':
+          description: Aree salvate con successo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+        '400':
+          description: Richiesta non valida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '500':
+          description: Errore interno del server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 
 
@@ -615,7 +660,7 @@ components:
       properties:
         type:
           type: string
-          enum: [Point, Polygon]
+          enum: [Point, Polygon, LineString]
           example: Point
         coordinates:
           type: array
@@ -633,6 +678,30 @@ components:
           type: string
         tipo:
           type: string
+    # Creazione nuove aree Request *********************************
+    CreateAreeRequest:
+      type: object
+      required:
+        - titolo
+        - features
+      properties:
+        titolo:
+          type: string
+          description: Titolo dell'area
+        features:
+          type: array
+          description: Array di oggetti contenenti una geometry GeoJSON
+          items:
+            type: object
+            required:
+              - type
+              - geometry
+            properties:
+              type:
+                type: string
+                description: Deve essere "Feature"
+              geometry:
+                $ref: '#/components/schemas/GeoJson'
 
     # Segnalazione ********************************************************
     Segnalazione:
@@ -828,3 +897,4 @@ components:
             una minuscola, un numero e un carattere speciale.
         isAdmin:
           type: boolean
+
