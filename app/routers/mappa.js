@@ -30,9 +30,9 @@ router.get('/', async (req,res) => {
 });
 
 
-router.post('/',requireBody(['titolo','feature']), async(req,res)=> {
+router.post('/',requireBody(['titolo','features']), async(req,res)=> {
     try{
-        for (const e of req.body.array) {
+        for (const e of req.body.features) {
             await Area.create({
                 titolo: req.body.titolo,
                 posizione: e.type
