@@ -21,6 +21,8 @@ paths:
     post:
       summary: Login utente o dipendente
       description: Effettua il login restituendo un token JWT e le informazioni del profilo.
+      tags:
+        - Authentication
       requestBody:
         required: true
         content:
@@ -61,6 +63,8 @@ paths:
     post:
       summary: Registrazione nuovo utente
       description: Crea un nuovo account utente e restituisce token e profilo.
+      tags:
+        - Authentication
       requestBody:
         required: true
         content:
@@ -99,6 +103,8 @@ paths:
     get:
       summary: Recupera tutte le aree e le segnalazioni validate
       description: Restituisce le segnalazioni con stato "Validata" e tutte le aree presenti nel database.
+      tags:
+          - Mappa
       responses:
         '200':
           description: Richiesta completata con successo
@@ -131,9 +137,8 @@ paths:
       description: >
         Permette di salvare più aree a partire da un array di feature GeoJSON.
         Per ogni feature viene salvata la geometry come posizione.
-
       tags:
-        - Aree
+        - Mappa
 
       requestBody:
         required: true
@@ -181,6 +186,8 @@ paths:
     get:
       summary: Recupera le segnalazioni
       description: Restituisce tutte le segnalazioni per i dipendenti e solo quelle validate per gli utenti.
+      tags:
+        - Segnalazioni
       responses:
         '200':
           description: Segnalazioni recuperate con successo
@@ -207,7 +214,9 @@ paths:
 # --------------------------------------------------------------------------
     post:
       summary: Crea una nuova segnalazione
-      description: Permette all’utente di creare una nuova segnalazione nel sistema.
+      description: Permette all'utente di creare una nuova segnalazione nel sistema.
+      tags:
+        - Segnalazioni
       requestBody:
         required: true
         content:
@@ -235,6 +244,8 @@ paths:
     patch:
       summary: Aggiorna lo stato di una segnalazione
       description: Consente al dipendente di validare o rifiutare una segnalazione e assegnare punti.
+      tags:
+        - Segnalazioni
       parameters:
         - name: id
           in: path
@@ -286,6 +297,8 @@ paths:
     get:
       summary: Recupera tutte le iniziative
       description: Restituisce tutte le iniziative presenti nel sistema.
+      tags:
+        - Iniziative
       responses:
         '200':
           description: Iniziative recuperate con successo
@@ -312,6 +325,8 @@ paths:
     post:
       summary: Crea una nuova iniziativa
       description: Permette ai dipendenti di creare una nuova iniziativa.
+      tags:
+        - Iniziative
       requestBody:
         required: true
         content:
@@ -349,6 +364,8 @@ paths:
     patch:
       summary: Assegna punti ad un'iniziativa
       description: Permette agli utenti di assegnare punti ad un'iniziativa in corso, decrementando i propri punti disponibili.
+      tags:
+        - Iniziative
       parameters:
         - name: id
           in: path
@@ -405,6 +422,8 @@ paths:
     get:
       summary: Recupera la classifica utenti
       description: Restituisce i primi 50 utenti ordinati per puntiTot decrescente, con la posizione relativa e il nickname.
+      tags:
+        - Classifica
       responses:
         '200':
           description: Classifica recuperata con successo
@@ -437,9 +456,11 @@ paths:
   /utenti/me:
     get:
       summary: Recupera il profilo dell'utente autenticato
-      description: >
+      description:
         Restituisce le informazioni dell'utente loggato (escludendo password e campi tecnici)
         insieme a tutte le segnalazioni da lui create.
+      tags:
+      - Utenti
       responses:
         '200':
           description: Profilo recuperato con successo
@@ -477,8 +498,8 @@ paths:
     get:
       summary: Recupera il profilo del dipendente autenticato
       description: Restituisce le informazioni del dipendente loggato escludendo password e campi tecnici.
-      security:
-        - bearerAuth: []
+      tags:
+        - Dipendenti
       responses:
         '200':
           description: Profilo recuperato con successo
@@ -510,11 +531,11 @@ paths:
   /dipendenti/create:
     post:
       summary: Crea un nuovo account dipendente
-      description: >
+      description:
         Permette ad un dipendente con ruolo Admin di creare un nuovo account dipendente.
         Richiede autenticazione JWT.
-      security:
-        - bearerAuth: []
+      tags:
+        - Dipendenti
       requestBody:
         required: true
         content:
