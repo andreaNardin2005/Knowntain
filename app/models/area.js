@@ -3,7 +3,7 @@ import geoJson from './geoJson.js';
 
 const AreaSchema = new Schema({
     titolo: { type: String, required: true },
-    descrizione: { type: String },
+    descrizione: { type: String, required: true },
     tipo: { 
         type: String,
         enum: [
@@ -18,8 +18,8 @@ const AreaSchema = new Schema({
             'Formazioni Rocciose',
             'Sentieri e Percorsi',
             'Altro'
-        ]/*,
-        required: true*/
+        ],
+        required: true
     },
     posizione: {
         type: geoJson,

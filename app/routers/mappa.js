@@ -32,9 +32,11 @@ router.get('/', async (req,res) => {
 /*-----------------------------
  - POST: Creazione nuove aree
 -------------------------------*/
-router.post('/',requireBody(['titolo','features']), async(req,res) => {
-    //test
-    if (!Array.isArray(req.body.features)) {
+router.post('/',requireBody(['nome','descrizione','tipo','features']), async(req,res) => {
+
+    const { nome, descrizione, tipo, features } = req.body;
+
+    if (!Array.isArray(features)) {
         return res.status(400).json({
             success: false,
             message: 'features deve essere un array'
@@ -42,8 +44,8 @@ router.post('/',requireBody(['titolo','features']), async(req,res) => {
     }
 
     try {
-        for (const e of req.body.features) {
-            //test
+        for (const e of features) {
+            
             if (!e.type) {
                 return res.status(400).json({
                     success: false,
@@ -52,19 +54,22 @@ router.post('/',requireBody(['titolo','features']), async(req,res) => {
             }
 
             await Area.create({
-                titolo: req.body.titolo,
+                titolo: nome,
+                descrizione: descrizione,
+                tipo: tipo,
                 posizione: e.geometry
             });
         }
+        
         return res.status(201).json({
             success: true,
             message: 'Aree salvate con successo'
         });
 
-    } catch (error) {
+    } catch (err) {
         return res.status(500).json({
             success: false,
-            message: 'Impossibile salvare le aree'
+            message: `Impossibile salvare le nuove aree: ${err}`
         });
     }
 });
