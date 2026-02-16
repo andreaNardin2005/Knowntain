@@ -19,14 +19,14 @@ router.get('/', async (req, res) => {
             // Se è un dipendente ritorno tutte le segnalazioni
             segnalazioni = await Segnalazione
                 .find({})
-                .sort({ stato: 1, data: 1 })
+                .sort({ stato: 1, data: -1 })
                 .exec();
         } else {
 
             // Se è un utente ritorno solo quelle validate
             segnalazioni = await Segnalazione
                 .find({ stato: 'Validata' })
-                .sort({ data: 1 })
+                .sort({ data: -1 })
                 .exec();
         }
 
