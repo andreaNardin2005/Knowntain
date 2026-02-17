@@ -22,7 +22,10 @@ router.get('/me', async (req, res) => {
 		} 
 
 		// Cerco le segnalazioni associate all'utente che ho trovato
-		const segnalazioni = await Segnalazione.find({ utente: user._id }).exec();
+		const segnalazioni = await Segnalazione
+										.find({ utente: user._id })
+										.sort({ data: -1 })
+										.exec();
 
 		/* Compatto tutte le informazioni relative 
 		all'utente e alle segnalazioni associate in un unico oggetto */
