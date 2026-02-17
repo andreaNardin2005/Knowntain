@@ -27,9 +27,17 @@ jest.unstable_mockModule('../app/models/utente.js', () => ({
 jest.unstable_mockModule('../app/models/segnalazione.js', () => ({
   default: {
     find: jest.fn(() => ({
-      exec: jest.fn().mockResolvedValue([
-        { _id:'s1', titolo:'Segn 1', toObject() { return { _id:'s1', titolo:'Segn 1' }; } }
-      ])
+      sort: jest.fn(() => ({
+        exec: jest.fn().mockResolvedValue([
+          {
+            _id: 's1',
+            titolo: 'Segn 1',
+            toObject() {
+              return { _id: 's1', titolo: 'Segn 1' };
+            }
+          }
+        ])
+      }))
     }))
   }
 }));
